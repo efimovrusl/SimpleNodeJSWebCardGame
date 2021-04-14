@@ -12,8 +12,7 @@ const DbConnection = require('./DbConnection.js')
 const db_connection = new DbConnection()
 // db_connection.getUsers()
 
-
-// let sockets = [];
+let Users = []
 io.on('connection', (socket) => {
   // sockets.push(socket);
   socket.on('message', text => {
@@ -21,14 +20,19 @@ io.on('connection', (socket) => {
   })
   socket.on('try_login', (data) => {
     console.log(data)
-    db_connection.tryLogin(data.login, data.password_hash, (result) => {
-      socket.emit('login_result', result)
-    })
 
+    db_connection.tryLogin(data.login, data.password_hash, result => {
+      if (result == true) {
+        Users.push(new User({
+          socket: socket,
+          login: data.login,
+        }))
+      }
+    })
   })
-  console.log(`a user connected. IP: ${socket.handshake.address.split('f:')[1]}`);
+  console.log(`User (${socket.handshake.address.split('f:')[1]}) connected.`);
   socket.on('disconnect', () => {
-    console.log(`${socket.handshake.address.split('f:')[1]} disconnected.`)     
+    console.log(`User (${socket.handshake.address.split('f:')[1]}) disconnected.`)     
   })
 });
 

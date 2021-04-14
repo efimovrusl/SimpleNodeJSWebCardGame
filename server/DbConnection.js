@@ -10,6 +10,16 @@ module.exports = class DbConnection {
       if (err) console.error(`Connection to MySQL failed: ${err.message}`)
       else console.log(`Connected to MySQL`)
     })
+
+    this.#connection.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        login VARCHAR(255) NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        avatar_link VARCHAR(255) DEFAULT 'https://ibb.co/s1WVzKT',
+        level INT(10) NOT NULL DEFAULT 0
+      );
+    `)
   }
 
   connectToDatabase(user = "root", password = "72918345", host = "localhost", port = 3306) {
@@ -38,7 +48,6 @@ module.exports = class DbConnection {
   }
 
   tryLogin(login, password_hash, onResult) {
-    let result = 2
     this.#connection.query(
       `SELECT * FROM users WHERE login = '${login}'`,
       (err, results, fields) => {
@@ -57,6 +66,5 @@ module.exports = class DbConnection {
         }
       }
     )
-    console.log("RESULT: " + result)
   }
 }
