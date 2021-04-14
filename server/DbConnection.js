@@ -67,4 +67,10 @@ module.exports = class DbConnection {
       }
     )
   }
+
+  checkLogin(login, onResult) {
+    this.#connection.query(
+      `SELECT * FROM users WHERE login = '${login}'`,
+      (err, results, fields) => { onResult(results.length > 0) })
+  }
 }

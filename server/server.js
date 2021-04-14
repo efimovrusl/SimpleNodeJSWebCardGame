@@ -28,6 +28,12 @@ io.on('connection', (socket) => {
           login: data.login,
         }))
       }
+      socket.emit('login_result', result)
+    })
+  })
+  socket.on('check_login', (data) => {
+    db_connection.checkLogin(data.login, result => {
+      socket.emit('check_login_result', result)
     })
   })
   console.log(`User (${socket.handshake.address.split('f:')[1]}) connected.`);
