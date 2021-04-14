@@ -11,8 +11,8 @@ socket.on('error', () => {
 })
 
 function shit() {
-  socket.emit('check_login', {login: 'pidor'})
-  socket.on('check_login_result', (data) => {
+  socket.emit('try_register', {login: 'leha22', password_hash: '123456'})
+  socket.on('register_result', (data) => {
     console.log(data)
   })
 }

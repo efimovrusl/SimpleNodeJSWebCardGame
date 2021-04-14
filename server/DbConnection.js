@@ -18,8 +18,9 @@ module.exports = class DbConnection {
         password_hash VARCHAR(255) NOT NULL,
         avatar_link VARCHAR(255) DEFAULT 'https://ibb.co/s1WVzKT',
         level INT(10) NOT NULL DEFAULT 0
-      );
-    `)
+      );`, (err, results, fields) => { 
+        if (err) console.log(`Database creation error: ${err}\n`) 
+      })
   }
 
   connectToDatabase(user = "root", password = "72918345", host = "localhost", port = 3306) {
@@ -34,17 +35,36 @@ module.exports = class DbConnection {
 
   getUsers() {
     this.#connection.query("SELECT * FROM `users`", (err, results, fields) => {
-      if (err) console.log(`Error: ${err}\n`)
+      if (err) console.log(`getUsers error: ${err}\n`)
       else console.log(results)
     })
   }
 
   registerUser(login, password_hash) {
     this.#connection.query(
-    )
-    this.#connection.query(
       `INSERT INTO users (login, password_hash) 
       VALUES ('${login}', '${password_hash}')`)
+  }
+
+  tryRegister(login, password_hash, onResult) {
+    this.#connection.query(
+      `SELECT * FROM users WHERE login = '${login}'`,
+      (err, results, fields) => {
+        if (err) {
+          console.log(`Register error: ${err}\n`)
+          onResult(false)
+        } else {
+          if (results.length > 0) {
+            console.log("Register failed!")
+            onResult(false)
+          } else {
+            // REGISTRATION HERE (no users with the same login found)
+            this.registerUser(login, password_hash)
+            onResult(true)
+          }
+        }
+      }
+    )
   }
 
   tryLogin(login, password_hash, onResult) {
@@ -52,7 +72,7 @@ module.exports = class DbConnection {
       `SELECT * FROM users WHERE login = '${login}'`,
       (err, results, fields) => {
         if (err) {
-          console.log(`Error: ${err}\n`)
+          console.log(`Login error: ${err}\n`)
           onResult(false)
         }
         else {
