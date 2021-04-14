@@ -4,11 +4,16 @@ socket.on('connection', () => {
   console.log('--> Connected to server.')
 })
 
+
+
 socket.on('error', () => {
   console.log('--> Connection failed.')
 })
 
 function shit() {
-  socket.emit('message', 'YOU PRESSED FUCKING BUTTON!')
+  socket.emit('try_login', {login: 'pidor', password_hash: 'password'})
+  socket.on('login_result', (data) => {
+    console.log(data)
+  })
 }
 

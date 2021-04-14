@@ -1,0 +1,9 @@
+CREATE DATABASE IF NOT EXISTS race01_db;
+USE `race01_db`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` INT(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `login` VARCHAR(255) NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `avatar_link` VARCHAR(255) DEFAULT 'https://bit.ly/3mMrEAr',
+  `level` INT(10) NOT NULL DEFAULT 0
+);

@@ -7,51 +7,31 @@ const io = require('socket.io')(http, {
   cors: { origin: "*" }
 });
 
+const DbConnection = require('./DbConnection.js')
+
+const db_connection = new DbConnection()
+// db_connection.getUsers()
+
+
 // let sockets = [];
 io.on('connection', (socket) => {
   // sockets.push(socket);
   socket.on('message', text => {
     console.log(text)
   })
+  socket.on('try_login', (data) => {
+    console.log(data)
+    db_connection.tryLogin(data.login, data.password_hash, (result) => {
+      socket.emit('login_result', result)
+    })
 
-  console.log(`a user connected. socket: ${socket}`);
+  })
+  console.log(`a user connected. IP: ${socket.handshake.address.split('f:')[1]}`);
   socket.on('disconnect', () => {
-    console.log(`${socket} disconnected.`)
+    console.log(`${socket.handshake.address.split('f:')[1]} disconnected.`)     
   })
 });
 
 http.listen(port, () => {
   console.log(`listening on *:${port}`);
 });
-
-// server.on('message', (message) => {
-//   console.log(`Client sent message: ${message}`)
-// });
-
-
-
-// server.listen(port, host, () => {
-//   console.log(`TCP Server is running on port "${port}".`);
-// })
-
-// let sockets = [];
-
-// server.on('connection', function(sock) {
-//   console.log(`CONNECTED: ${sock.remoteAddress}:${sock.remotePort}`);
-//   sockets.push(sock);
-//   sock.on('data', function(data) {
-//     console.log(`DATA ${sock.remoteAddress}: ${data}`);
-//     // Write the data back to all the connected, the client will receive it as data from the server
-//     sockets.forEach(function(sock, index, array) {
-//       sock.write(`${sock.remoteAddress}: ${sock.remotePort} said ${data}\n`);
-//       });
-//     });
-//     // Add a 'close' event handler to this instance of socket
-//     sock.on('close', function(data) {
-//       let index = sockets.findIndex(function(o) {
-//         return o.remoteAddress === sock.remoteAddress && o.remotePort === sock.remotePort;
-//       });
-//       if (index !== -1) sockets.splice(index, 1);
-//       console.log(`CLOSED: ${sock.remoteAddress} ${sock.remotePort}`);
-//     });
-//   });
