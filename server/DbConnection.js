@@ -33,10 +33,14 @@ module.exports = class DbConnection {
     })
   }
 
-  showUsers() {
+  registeredUsers(deleg) {
     this.#connection.query("SELECT * FROM `users`", (err, results, fields) => {
-      if (err) console.log(`getUsers error: ${err}\n`)
-      else console.log(results)
+      if (err) {
+        console.log(`getUsers error: ${err}\n`)
+        deleg(null)
+      } else {
+        deleg(results)
+      }
     })
   }
 
@@ -48,7 +52,8 @@ module.exports = class DbConnection {
         onResult(null)
       } else {
         if (results.length >= 1) {
-          onResult({login: results[0].login, password_hash: results[0].password_hash})
+          let res = results[0]
+          onResult({id: res.id, login: res.login, password_hash: res.password_hash})
         }
       }
     })

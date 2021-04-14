@@ -26,11 +26,14 @@ io.on('connection', (socket) => {
 
     db_connection.tryLogin(data.login, data.password_hash, result => {
       if (result == true) {
-        db_connection.requestUser(data.login, (login_password) => {
-          if (login_password) {
+        db_connection.requestUser(data.login, (user_data) => {
+          if (user_data) {
             let user = Users.get(socket.handshake.address)
-            // console.log("FUUUCK " + user.socket.handshake.address.split('f:')[1])
-            user.log_in(login_password.login, login_password.password_hash)
+            user.log_in(
+              user_data.id,
+              user_data.login, 
+              user_data.password_hash
+            )
           } else {
             console.log("User request failed!")
           }
@@ -65,7 +68,7 @@ http.listen(port, () => {
 });
 
 setInterval(() => {
-  console.log("=========================")
+  console.log("/*******************************************************************/")
   Users.forEach((user) => {
     console.log(user.serialize())
   })
