@@ -11,7 +11,10 @@ socket.on('error', () => {
 })
 
 function shit() {
-  socket.emit('try_register', {login: 'leha22', password_hash: '123456'})
+  socket.emit('try_login', {login: 'ruslan', password_hash: 'qwerty'})
+  setTimeout(() => {
+    socket.emit('logout')
+  }, 5000)
   socket.on('register_result', (data) => {
     console.log(data)
   })

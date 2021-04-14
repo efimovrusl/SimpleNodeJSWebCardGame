@@ -33,10 +33,24 @@ module.exports = class DbConnection {
     })
   }
 
-  getUsers() {
+  showUsers() {
     this.#connection.query("SELECT * FROM `users`", (err, results, fields) => {
       if (err) console.log(`getUsers error: ${err}\n`)
       else console.log(results)
+    })
+  }
+
+  requestUser(login, onResult) {
+    this.#connection.query(`SELECT * FROM users WHERE login = '${login}'`,
+    (err, results, fields) => {
+      if (err) {
+        console.log(`User request error: ${err}\n`)
+        onResult(null)
+      } else {
+        if (results.length >= 1) {
+          onResult({login: results[0].login, password_hash: results[0].password_hash})
+        }
+      }
     })
   }
 
@@ -51,14 +65,15 @@ module.exports = class DbConnection {
       `SELECT * FROM users WHERE login = '${login}'`,
       (err, results, fields) => {
         if (err) {
-          console.log(`Register error: ${err}\n`)
+          console.log(`Registration error: ${err}\n`)
           onResult(false)
         } else {
           if (results.length > 0) {
-            console.log("Register failed!")
+            console.log("Registration failed!")
             onResult(false)
           } else {
             // REGISTRATION HERE (no users with the same login found)
+            console.log(`Registered: ${login} ${password_hash}`)
             this.registerUser(login, password_hash)
             onResult(true)
           }
