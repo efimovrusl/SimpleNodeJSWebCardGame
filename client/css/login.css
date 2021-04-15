@@ -1,0 +1,84 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+html {
+    width: 100vw;
+    height: 100vh;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-image: url(https://drive.google.com/file/d/1avODfTsDK3lkgphW2-qKgRpdkXPCwxma/view?usp=sharing);
+}
+
+h1 {
+    text-align: center;
+    background-color: #bd6e08;
+    color: white;
+    width: 30%;
+    border: 1px solid #000000;
+    border-bottom: none;
+    border-radius: 10px 10px;
+    padding: 20px;
+    margin: 0;
+    margin: auto;
+}
+
+
+
+form, .content {
+    width: 30%;
+    margin: 0px auto;
+    padding: 20px;
+    border: 1px solid #000000;
+    background: white;
+    border-radius: 0px 0px 10px 10px;
+}
+
+.input-group label {
+    display: block;
+    text-align: left;
+    margin: 3px;
+}
+
+.input-group input {
+    height: 30px;
+    width: 93%;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid rgb(0, 0, 0);
+}
+
+.btn {
+    width: 30%;
+    padding: 10px;
+    font-size: 15px;
+    color: white;
+    background: #bd6e08;
+    border: none;
+    border-radius: 5px;
+}
+
+.reg {
+    display: none;
+}
+
+.waiting-room {
+    display: none;
+}
+
+.fight {
+    display: none;
+}
+
+.test1 {
+    display: none;
+}
+
+.test2 {
+    display: none;
+}

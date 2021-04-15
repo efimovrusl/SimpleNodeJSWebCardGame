@@ -1,16 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>Test</title>
+  <meta name="description" content="Great Battle">
+  <link type="text/css" href="css/login.css" rel="stylesheet">
   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="css/styleGame.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <div id="id0"></div>
-  <input type="submit" value="Send Request" onclick="shit()">
+    <div class="reg">
+        <h1>Registration</h1>
+        <div class="input-group">
+            <label>Login:</label>
+            <input type="text" name="login" id="login" required>
+        </div>
+        <div class="input-group">
+            <label>Password:</label>
+            <input type="password" name="password" id="password" pattern="[a-zA-Z0-9]+" required>
+        </div>
+        <div class="input-group">
+            <label>Confirm Password:</label>
+            <input type="password" name="confirm" id="confirm" pattern="[a-zA-Z0-9]+" required>
+        </div>
+        <div class="input-group">
+            <button type="submit" class="btn" onclick="regUser()">Register</button>
+            <button onclick="changePage('login')" class="btn">Have an account?</button>
+        </div>
+    </div>
+    <div class="login">
+        <h1>Sign in</h1>
+        <div class="input-group">
+            <label>Login:</label>
+            <input type="text" name="login" id="login2" required>
+        </div>
+        <div class="input-group">
+            <label>Password:</label>
+            <input type="password" name="password" id="password2" pattern="[a-zA-Z0-9]+" required>
+        </div>
+        <div class="input-group">
+            <button type="submit" class="btn" onclick="checkUser()">Sign In</button>
+            <button onclick="changePage('reg')" class="btn">Need an account?</button>
+        </div>
+    </div>
+    <div class="waiting-room">
+        <h1>Waiting Room</h1>
+        <div class="input-group">
+            <button onclick="logoutUser()" class="btn">Logout</button>
+            <button onclick="imready()" class="btn">Ready</button>
+        </div>
+    </div>
+
+    <!-- Fight -->
 
 
-  <!-- <style src="style.css"></style> -->
-  <script src="script.js"></script>
+    <div class="fight">
+        <div class="input-group">
+
+            
+
+
+            <div class="main">
+                <div id="enemyCard" class="cardOnField"></div>
+                <div id="yourCard" class="cardOnField"></div>
+        
+                <div class="yourHud hud">
+                    <div class="avatar">
+                        <img src="assets/img/avatar.jpg" alt="Icon">
+                    </div>
+                    <span class="score">Rank: 5</span>
+                    <span class="coins">Coins: 2</span>
+                    <span class="name">Motherfucker</span>
+                    <div class="health" id="yourHealth"><span></span></div>
+                </div>
+        
+                <div class="cardsInHand" id="yourCardsInHand">
+                    <!-- cardsInHand -->
+                </div>
+        
+                <div class="enemyHud hud">
+                    <div class="avatar">
+                        <img src="assets/img/avatar.jpg" alt="Icon">
+                    </div>
+                    <span class="score">Rank: 5</span>
+                    <span class="coins">Coins: 2</span>
+                    <span class="name">Attack Helicopter</span>
+                    <div class="health" id="enemysHealth"><span></span></div>
+                </div>
+        
+        
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="js/Card.js"></script> 
+    <script src="js/scriptGame.js"></script>
 </body>
+
 </html>

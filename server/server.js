@@ -1,6 +1,7 @@
+const server_ip = '10.11.11.4'
+
+exports.host = server_ip
 const port = 7070
-const host = '10.11.9.4'
-exports.host = host
 
 const http = require('http').createServer()
 const io = require('socket.io')(http, {
@@ -9,14 +10,16 @@ const io = require('socket.io')(http, {
 
 const DbConnection = require('./DbConnection.js')
 const User = require('./User.js')
+const Battle = require('./Battle.js')
+
 
 const db_connection = new DbConnection()
-// db_connection.getUsers()
+let users = new Map()
+let battle = new Battle(users)
 
-let Users = new Map()
 io.on('connection', (socket) => {
   console.log(`User (${socket.handshake.address.split('f:')[1]}) connected.`)
-  Users.set(socket.handshake.address, new User(socket))
+  users.set(socket.handshake.address, new User(socket))
 
   socket.on('message', text => {
     console.log(text)
@@ -28,7 +31,7 @@ io.on('connection', (socket) => {
       if (result == true) {
         db_connection.requestUser(data.login, (user_data) => {
           if (user_data) {
-            let user = Users.get(socket.handshake.address)
+            let user = users.get(socket.handshake.address)
             user.log_in(
               user_data.id,
               user_data.login, 
@@ -45,7 +48,7 @@ io.on('connection', (socket) => {
     })
   })
   socket.on('logout', () => {
-    Users.get(socket.handshake.address).logout()
+    users.get(socket.handshake.address).logout()
   })
   socket.on('check_login', (data) => {
     db_connection.checkLogin(data.login, result => {
@@ -57,20 +60,40 @@ io.on('connection', (socket) => {
       socket.emit('register_result', result)
     })
   })
-  socket.on('disconnect', () => {
-    console.log(`User (${socket.handshake.address.split('f:')[1]}) disconnected.`)
-    Users.delete(socket.handshake.address)
-  })
+  
 
   /* GAME LOGIC */
-  socket.on('ready', (data) => {
-    
+  socket.on('ready', () => {
+    users.get(socket.handshake.address).is_ready = true
   })
+  socket.on('unready', () => {
+    users.get(socket.handshake.address).is_ready = false
+  })
+  /* SENDING GAME CURRENT STATE */
+  let send_info_interval = setInterval(() => {
+    let online_users = []
+    users.forEach(user => { if (user.socket.handshake.address != socket.handshake.address) online_users.push(user.login) })
+    socket.emit('game_state', {
+      im_loginned: !!users.get(socket.handshake.address).login, // boolean
+      im_ready: users.get(socket.handshake.address).is_ready, // boolean
+      im_playing: users.get(socket.handshake.address).is_playing, // boolean
+      other_players: online_users, // array of logins <string>
+      game_is_going_on: !!battle.state, // 0 is waiting for players
+      game_state: battle.state, // stateEnum
+      game_timer: battle.timer, // seconds
+      enemy: battle.getEnemyLogin(socket),
+      my_cards: battle.getMyCards(socket),
+    })
+  }, 50)
 
 
 
 
-
+  socket.on('disconnect', () => {
+    clearInterval(send_info_interval)
+    console.log(`User (${socket.handshake.address.split('f:')[1]}) disconnected.`)
+    users.delete(socket.handshake.address)
+  })
 });
 
 http.listen(port, () => {
@@ -78,8 +101,9 @@ http.listen(port, () => {
 });
 
 setInterval(() => {
-  console.log("/*******************************************************************/")
-  Users.forEach((user) => {
+  let today = new Date();
+  console.log(`/******************* [${users.size}] players online: [${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}] ********************/`)
+  users.forEach((user) => {
     console.log(user.serialize())
   })
 }, 2000)

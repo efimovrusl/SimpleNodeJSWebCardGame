@@ -32,6 +32,10 @@ module.exports = class User {
   }
 
   serialize() {
-    return `User: #${this.id}\tIP: ${this.socket.handshake.address.split('f:')[1]}\tLogin: ${this.login}\tPassword: ${this.password_hash}`
+    return `User: #${this.id}\t\
+    IP: ${this.socket.handshake.address.split('f:')[1]}\t\
+    Login: ${this.login}\t\
+    Password: ${this.password_hash}\
+    Ready? ${!!this.is_ready}`
   }
 }

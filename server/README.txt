@@ -9,6 +9,13 @@
 -- If you don't have database "race01_db" on your machine, then run "sql/create_db.sql" script with mysql
    (shell script: mysql -u <username> -p<password> source sql/create_db.sql)
 
+-- Set "server_ip" variable in first row of "script.js" and "server.js" to your local IP
+
 -- Finally open "server" directory and run shell script "npm start" and don't close console
 
--- If something gone wrong, please contact in Telegram with @pen_is_wise (+38)050-130-39-41
+
+
+
+
+
+P.S. If something gone wrong, please contact in Telegram with @pen_is_wise (+38)050-130-39-41
