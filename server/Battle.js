@@ -69,8 +69,122 @@ module.exports = class Battle {
 
   /** @param {Map} Users */
   constructor(Users) {
-    this.users = Users
-    this.update_interval = setInterval(this.update, 10)
+
+
+    this.update_interval = setInterval(() => {
+      this.users = []
+      Users.forEach(user => { this.users.push(user) })
+      switch(this.state) {
+        case stateEnum.waiting:
+          let ready_users = this.users.filter(user => user.is_ready)
+          console.log(ready_users.length)
+          if (ready_users.length >= 2) {
+            // console.log("IM FUCKED")
+            this.players.push(ready_users[0])
+            this.players.push(ready_users[1])
+            this.users.forEach(user => { user.is_ready = false })
+            this.players[0].is_playing = true
+            this.players[1].is_playing = true
+            this.state = stateEnum.countdown
+          }
+
+          break;
+        case stateEnum.countdown:
+          if (!this.toggled_interval) {
+            this.timer = 3
+            this.toggled_interval = setInterval(() => {
+              this.timer--
+              if (this.timer <= 0) {
+                this.timer = 0
+                clearInterval(this.toggled_interval)
+                this.toggled_interval = '1sectimer'
+                this.toggled_timeout = setTimeout(() => {
+                  this.state = stateEnum.move
+                  this.toggled_interval = null
+                  this.toggled_timeout = null
+                  this.deal_cards()
+                }, 1000)
+              }
+            }, 1000)
+          }
+          break;
+        case stateEnum.move:
+          if (!this.toggled_interval) {
+            this.timer = 30
+            this.toggled_interval = setInterval(() => {
+              this.timer--
+              if (this.timer <= 0) {
+                this.timer = 0
+                clearInterval(this.toggled_interval)
+                this.toggled_interval = '1sectimer'
+                this.toggled_timeout = setTimeout(() => {
+                  this.state = stateEnum.showdown
+                  this.toggled_interval = null
+                  this.toggled_timeout = null
+                  this.round++
+                  this.deal_cards()
+                }, 1000)
+              }
+            }, 1000)
+            for (let i = 0; i < 2; i++) {
+              this.players[i].socket.on('use_card', (card_id) => {
+                if (this.cards[i,card_id].cost <= this.round && !this.made_move[i])
+                  this.made_move[i] = true
+                  this.used_card[i] = card_id
+                  this.cards[i,card_id] = null
+                  this.cards[i] = this.cards[i].filter(card => card != null)
+                  this.players[i].socket.off('use_card')
+              })
+            }
+          }
+          break;
+        case stateEnum.showdown:
+          if (!this.toggled_interval) {
+            this.timer = 5
+            this.toggled_interval = setInterval(() => {
+              this.timer--
+              if (this.timer <= 0) {
+                this.timer = 0
+                clearInterval(this.toggled_interval)
+                this.toggled_interval = '1sectimer'
+                this.toggled_timeout = setTimeout(() => {
+                  if (round <= 6) {
+                    this.state = stateEnum.move
+                    for (let i = 0; i < 2; i++) {
+                      this.used_card[i] = null
+                      this.made_move[i] = false
+                      this.mana[i] = this.round
+                    }
+                    this.deal_cards()
+                  } else {
+                    this.state = stateEnum.results
+                  }
+                  this.toggled_interval = null
+                  this.toggled_timeout = null
+                }, 1000)
+              }
+            }, 1000)
+            // CALCULATING WHO WON ROUND
+            this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
+              || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
+            this.hp[this.winner]--
+          }
+          break;
+        case stateEnum.results:
+          if (!this.toggled_interval) {
+            this.timer = 10
+            this.toggled_interval = setInterval(() => {
+              this.timer--
+              if (this.timer <= 0) {
+                // nullifying all values to initial Battle state
+                this.end()
+              }
+            }, 1000)
+  
+          }
+          break;
+      }
+    }), 10
   }
 
   deal_cards() {
@@ -80,124 +194,17 @@ module.exports = class Battle {
   }
 
   update() {
-    switch(this.state) {
-      case stateEnum.waiting:
-        let ready_users = []
-        this.users.forEach(user => { if (user.is_ready && user.login) ready_users.push(user) })
-        if (ready_users.length >= 2) {
-          this.players.push(ready_users[0])
-          this.players.push(ready_users[1])
-          this.users.forEach(user => { user.is_ready = false })
-          this.players[0].is_playing = true
-          this.players[1].is_playing = true
-          this.state = this.stateEnum.countdown
-        }
-        break;
-      case stateEnum.countdown:
-        if (!this.toggled_interval) {
-          this.timer = 3
-          this.toggled_interval = setInterval(() => {
-            this.timer--
-            if (this.timer <= 0) {
-              this.timer = 0
-              clearInterval(this.toggled_interval)
-              this.toggled_interval = '1sectimer'
-              this.toggled_timeout = setTimeout(() => {
-                this.state = stateEnum.move
-                this.toggled_interval = null
-                this.toggled_timeout = null
-                this.deal_cards()
-              }, 1000)
-            }
-          }, 1000)
-        }
-        break;
-      case stateEnum.move:
-        if (!this.toggled_interval) {
-          this.timer = 30
-          this.toggled_interval = setInterval(() => {
-            this.timer--
-            if (this.timer <= 0) {
-              this.timer = 0
-              clearInterval(this.toggled_interval)
-              this.toggled_interval = '1sectimer'
-              this.toggled_timeout = setTimeout(() => {
-                this.state = stateEnum.showdown
-                this.toggled_interval = null
-                this.toggled_timeout = null
-                this.round++
-                this.deal_cards()
-              }, 1000)
-            }
-          }, 1000)
-          for (let i = 0; i < 2; i++) {
-            this.players[i].socket.on('use_card', (card_id) => {
-              if (this.cards[i,card_id].cost <= this.round && !this.made_move[i])
-                this.made_move[i] = true
-                this.used_card[i] = card_id
-                this.cards[i,card_id] = null
-                this.cards[i] = this.cards[i].filter(card => card != null)
-                this.players[i].socket.off('use_card')
-            })
-          }
-        }
-        break;
-      case stateEnum.showdown:
-        if (!this.toggled_interval) {
-          this.timer = 5
-          this.toggled_interval = setInterval(() => {
-            this.timer--
-            if (this.timer <= 0) {
-              this.timer = 0
-              clearInterval(this.toggled_interval)
-              this.toggled_interval = '1sectimer'
-              this.toggled_timeout = setTimeout(() => {
-                if (round <= 6) {
-                  this.state = stateEnum.move
-                  for (let i = 0; i < 2; i++) {
-                    this.used_card[i] = null
-                    this.made_move[i] = false
-                    this.mana[i] = this.round
-                  }
-                  this.deal_cards()
-                } else {
-                  this.state = stateEnum.results
-                }
-                this.toggled_interval = null
-                this.toggled_timeout = null
-              }, 1000)
-            }
-          }, 1000)
-          // CALCULATING WHO WON ROUND
-          this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
-            || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
-          this.hp[this.winner]--
-        }
-        break;
-      case stateEnum.results:
-        if (!this.toggled_interval) {
-          this.timer = 10
-          this.toggled_interval = setInterval(() => {
-            this.timer--
-            if (this.timer <= 0) {
-              // nullifying all values to initial Battle state
-              this.end()
-            }
-          }, 1000)
-
-        }
-        break;
-    }
+    
   }
 
   end() {
-    if (this.toggled_interval != null && this.toggled_interval != '1sectimer') {
+    // if (this.toggled_interval != null && this.toggled_interval != '1sectimer') {
       clearInterval(this.toggled_interval)
-    }
-    if (this.toggled_interval == '1sectimer' && this.toggled_timeout != null) {
-      this.toggled_interval = null
+    // }
+    // if (this.toggled_interval == '1sectimer' && this.toggled_timeout != null) {
+    //   this.toggled_interval = null
       clearTimeout(this.toggled_timeout)
-    }
+    // }
     this.toggled_interval = null
     this.state = stateEnum.waiting
     this.players = null
@@ -212,14 +219,16 @@ module.exports = class Battle {
   }
 
   getMyCards(socket) {
-    if (this.state == stateEnum.waiting) return null
-    if (this.users[0].socket.handshake.address == socket.handshake.address) return cards[0]
-    else if (this.users[1].socket.handshake.address == socket.handshake.address) return cards[1]
-    else return null
+    if (this.players && this.players.length == 2) {
+      if (this.players[0].socket.handshake.address == socket.handshake.address) return this.cards[0]
+      else if (this.players[1].socket.handshake.address == socket.handshake.address) return this.cards[1]
+      else return null
+    } else return null
   }
 
   getEnemyLogin(socket) {
     if (this.state == stateEnum.waiting) return null
+    // console.log(this.users)
     if (this.users[0].socket.handshake.address == socket.handshake.address) return this.users[1].login
     else return this.users[0].login
   }

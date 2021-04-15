@@ -84,13 +84,17 @@ io.on('connection', (socket) => {
       enemy: battle.getEnemyLogin(socket),
       my_cards: battle.getMyCards(socket),
     })
+    // console.log(users.size)
   }, 50)
 
 
 
 
   socket.on('disconnect', () => {
+    console.log("CLEARED INTERVAL")
     clearInterval(send_info_interval)
+
+    battle.end()
     console.log(`User (${socket.handshake.address.split('f:')[1]}) disconnected.`)
     users.delete(socket.handshake.address)
   })

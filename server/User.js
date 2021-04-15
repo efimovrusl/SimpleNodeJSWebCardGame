@@ -16,7 +16,6 @@ module.exports = class User {
     this.is_ready = false
     this.is_playing = false
   }
-
   log_in(id, login, password_hash) {
     this.id = id
     this.login = login
@@ -29,6 +28,7 @@ module.exports = class User {
     this.password_hash = null
     this.level = null
     this.is_playing = false
+    this.is_ready = false
   }
 
   serialize() {
@@ -36,6 +36,7 @@ module.exports = class User {
     IP: ${this.socket.handshake.address.split('f:')[1]}\t\
     Login: ${this.login}\t\
     Password: ${this.password_hash}\
-    Ready? ${!!this.is_ready}`
+    Ready? ${!!this.is_ready}\
+    Playing? ${!!this.is_playing}`
   }
 }
