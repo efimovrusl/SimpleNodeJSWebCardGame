@@ -15,43 +15,38 @@
 </head>
 
 <body>
-    <div class="reg">
+    <div class="reg container">
         <h1>Registration</h1>
         <div class="input-group">
-            <label>Login:</label>
-            <input type="text" name="login" id="login" required>
+            <input placeholder="Login:" type="text" name="login" id="login" required>
         </div>
         <div class="input-group">
-            <label>Password:</label>
-            <input type="password" name="password" id="password" pattern="[a-zA-Z0-9]+" required>
+            <input placeholder="Password:" type="password" name="password" id="password" pattern="[a-zA-Z0-9]+" required>
         </div>
         <div class="input-group">
-            <label>Confirm Password:</label>
-            <input type="password" name="confirm" id="confirm" pattern="[a-zA-Z0-9]+" required>
+            <input placeholder="Confirm Password:" type="password" name="confirm" id="confirm" pattern="[a-zA-Z0-9]+" required>
         </div>
-        <div class="input-group">
+        <div class="input-group btns">
             <button type="submit" class="btn" onclick="regUser()">Register</button>
             <button onclick="changePage('login')" class="btn">Have an account?</button>
         </div>
     </div>
-    <div class="login">
+    <div class="login container">
         <h1>Sign in</h1>
         <div class="input-group">
-            <label>Login:</label>
-            <input type="text" name="login" id="login2" required>
+            <input placeholder="Login:" type="text" name="login" id="login2" required>
         </div>
         <div class="input-group">
-            <label>Password:</label>
-            <input type="password" name="password" id="password2" pattern="[a-zA-Z0-9]+" required>
+            <input placeholder="Password:" type="password" name="password" id="password2" pattern="[a-zA-Z0-9]+" required>
         </div>
-        <div class="input-group">
+        <div class="input-group btns">
             <button type="submit" class="btn" onclick="checkUser()">Sign In</button>
             <button onclick="changePage('reg')" class="btn">Need an account?</button>
         </div>
     </div>
-    <div class="waiting-room">
+    <div class="waiting-room container">
         <h1>Waiting Room</h1>
-        <div class="input-group">
+        <div class="input-group btns">
             <button onclick="logoutUser()" class="btn">Logout</button>
             <button onclick="imready()" class="btn">Ready</button>
         </div>
@@ -61,7 +56,7 @@
 
 
     <div class="fight">
-        <div class="input-group">
+        <div class="fight-group">
 
             
 

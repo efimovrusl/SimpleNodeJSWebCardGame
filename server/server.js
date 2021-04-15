@@ -71,6 +71,9 @@ io.on('connection', (socket) => {
   })
   /* SENDING GAME CURRENT STATE */
   let send_info_interval = setInterval(() => {
+    socket.on('disconnect', () => {
+      clearInterval(send_info_interval)
+    })
     let online_users = []
     users.forEach(user => { if (user.socket.handshake.address != socket.handshake.address) online_users.push(user.login) })
     socket.emit('game_state', {

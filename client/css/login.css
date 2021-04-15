@@ -3,6 +3,15 @@
     padding: 0px;
 }
 
+a:active, a:focus { outline: none; }
+
+input, textarea {outline:none;}
+input:active, textarea:active {outline:none;}
+:focus {outline:none;}
+textarea {resize:none;}
+textarea {resize:vertical;}
+textarea {resize:horizontal;}
+
 html {
     width: 100vw;
     height: 100vh;
@@ -11,20 +20,37 @@ html {
 body {
     width: 100vw;
     height: 100vh;
-    background-image: url(https://drive.google.com/file/d/1avODfTsDK3lkgphW2-qKgRpdkXPCwxma/view?usp=sharing);
+}
+
+span.bg {
+    z-index: 0;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), 
+    url(https://lh3.google.com/u/0/d/1fzBcwDUywr3z_s0R72iA6oootdhJycSa=w2950-h1600-iv2);
+    background-size: 50%;
+    background-position: 5% 4%;
+}
+
+.container {
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1 {
     text-align: center;
-    background-color: #bd6e08;
-    color: white;
-    width: 30%;
-    border: 1px solid #000000;
-    border-bottom: none;
-    border-radius: 10px 10px;
-    padding: 20px;
+    color: black;
+    background-color: #fff;
+    padding: 5px 50px;
+    filter: drop-shadow(10px 20px 0px #000000);
+    transform: skew(-17deg);
     margin: 0;
-    margin: auto;
+    justify-content: center;
+    display: inline-flex;
 }
 
 
@@ -38,29 +64,55 @@ form, .content {
     border-radius: 0px 0px 10px 10px;
 }
 
-.input-group label {
-    display: block;
-    text-align: left;
-    margin: 3px;
+.input-group {
+    margin-top: 30px;
+    width: 40%;
+    filter: drop-shadow(10px 20px 0px #000000);
+    transform: skew(-17deg);
 }
 
 .input-group input {
     height: 30px;
-    width: 93%;
+    width: 100%;
     padding: 5px 10px;
     font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid rgb(0, 0, 0);
+    border-radius: 0;
+    border: 3px solid black;
+    font-family: 'Sora', sans-serif;
+    transition: .2s;
+}
+input:active, input:focus {
+    transform: scale(1.05);
+}
+
+.btns {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
 }
 
 .btn {
-    width: 30%;
     padding: 10px;
     font-size: 15px;
-    color: white;
-    background: #bd6e08;
+    background-color: #fff;
+    padding: 5px 30px;
     border: none;
-    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: .2s;
+    font-family: 'Sora', sans-serif;
+}
+
+.btn:hover {
+    background-color: rgb(233, 233, 233);
+    transform: scale(.9);
+}
+.btn:active {
+    transform: scale(.8);
+}
+
+.btn:first-child {
+    margin-right: 10px;
 }
 
 .reg {
@@ -73,6 +125,9 @@ form, .content {
 
 .fight {
     display: none;
+}
+.fight-group {
+    z-index: 10;
 }
 
 .test1 {

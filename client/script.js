@@ -33,25 +33,25 @@ function open_login() {
   registrationPage.style.display = "none";
   waitingPage.style.display = "none";
   fightPage.style.display = "none";
-  LoginPage.style.display = "block";
+  LoginPage.style.display = "flex";
 }
 function open_reg() {
   LoginPage.style.display = "none";
   waitingPage.style.display = "none";
   fightPage.style.display = "none";
-  registrationPage.style.display = "block";
+  registrationPage.style.display = "flex";
 }
 function open_waiting() {
   LoginPage.style.display = "none";
   registrationPage.style.display = "none";
   fightPage.style.display = "none";
-  waitingPage.style.display = "block";
+  waitingPage.style.display = "flex";
 }
 function open_fight() {
   LoginPage.style.display = "none";
   registrationPage.style.display = "none";
   waitingPage.style.display = "none";
-  fightPage.style.display = "block";
+  fightPage.style.display = "flex";
 }
 
 let loginReg = document.getElementById("login");

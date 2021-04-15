@@ -1,5 +1,7 @@
 // const { isObject } = require("node:util");
-
+setInterval(() => {
+  console.log("ASDIASUDYHASIDASDASDASDASDIUASIUDA")
+}, 1)
 let spiderman = new Card("Spider Man", 2, 4, 4, "assets/img/spiderman.jpg");
 let captanamerica = new Card("Captan America", 3, 5, 1, "assets/img/captanamerica.jpg");
 
