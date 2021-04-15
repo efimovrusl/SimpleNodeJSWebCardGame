@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
       my_cards: battle.getMyCards(socket),
     })
     // console.log(users.size)
-  }, 500)
+  }, 50)
 
 
 

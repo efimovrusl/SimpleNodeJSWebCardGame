@@ -20,12 +20,9 @@ class Card {
         
         let idItem = document.getElementById(id);
         idItem.appendChild(newSpan);
-
-    }
-    unrender() {
-        let idItem = document.getElementById(id);
-        idItem.removeChild(newSpan);
-
+        // setTimeout(() => {
+        //     document.getElementById(id).innerHTML = ''
+        // },50)
     }
 
 }

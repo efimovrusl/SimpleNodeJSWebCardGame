@@ -10,18 +10,16 @@ let am_i_ready = false
 socket.on('game_state', data => {
   console.log(data.my_cards)
   am_i_ready = data.im_ready
+  mycards = []
   if (data.my_cards)
   data.my_cards.forEach((card) => { mycards.push(new Card(card.name, card.str, card.hp, card.cost, card.url)) })
   if (data.im_loginned) {
     if (data.im_playing) open_fight()
     else open_waiting()
   }
-
+  
   mycards.forEach(card => {
     card.render('yourCardsInHand')
-    setTimeout(() => {
-      card.unrender()
-    }, 50)
   });
 
 
