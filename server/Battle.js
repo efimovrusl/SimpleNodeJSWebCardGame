@@ -1,27 +1,30 @@
 module.exports = class Battle {
   
   stateEnum = {
-    "countdown": 0,
-    "move": 1,
-    "showdown": 2,
-    "results": 3
+    "waiting": 0,
+    "countdown": 1,
+    "move": 2,
+    "showdown": 3,
+    "results": 4
   }
-  state
-  players
-  
+  states = stateEnum.waiting
+  players = null
+  users = null
+  timer = 3
+  toggledInterval = null
+
   /** @param {Map} Users */
   constructor(Users) {
-    switch(Users.size()) {
-      case 0:
-
-        break;
-      case 1:
-
-        break;
-      default:
-        
-        break;
-    }
-    Array.from(Users)
+    this.users = Users
+    setInterval(this.update, 10)
   }
+
+  update() {
+    if (state == stateEnum.waiting) {
+      let count = 0
+      this.users.forEach(user => { if (user.is_ready) count++ })
+      
+    }
+  }
+
 }

@@ -61,6 +61,16 @@ io.on('connection', (socket) => {
     console.log(`User (${socket.handshake.address.split('f:')[1]}) disconnected.`)
     Users.delete(socket.handshake.address)
   })
+
+  /* GAME LOGIC */
+  socket.on('ready', (data) => {
+    
+  })
+
+
+
+
+
 });
 
 http.listen(port, () => {

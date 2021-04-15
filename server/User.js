@@ -4,6 +4,7 @@ module.exports = class User {
   login
   password_hash
   level
+  is_ready
   is_playing
 
   constructor(socket) {
@@ -12,6 +13,7 @@ module.exports = class User {
     this.login = null
     this.password_hash = null
     this.level = null
+    this.is_ready = false
     this.is_playing = false
   }
 
