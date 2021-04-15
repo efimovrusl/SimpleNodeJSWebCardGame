@@ -22,5 +22,10 @@ class Card {
         idItem.appendChild(newSpan);
 
     }
+    unrender() {
+        let idItem = document.getElementById(id);
+        idItem.removeChild(newSpan);
+
+    }
 
 }

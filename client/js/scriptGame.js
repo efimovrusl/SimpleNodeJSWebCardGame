@@ -17,13 +17,26 @@ socket.on('game_state', data => {
     else open_waiting()
   }
 
+  mycards.forEach(card => {
+    card.render('yourCardsInHand')
+    setTimeout(() => {
+      card.unrender()
+    }, 50)
+  });
 
-  document.querySelector(".cardsInHand .card").remove();
 
-
-  mycards.forEach(card => card.render('yourCardsInHand'));
+// [].forEach.call(document.querySelectorAll('.cardsInHand .card'), function(el) {
+//     el.remove();
+// });
+  
 
 })
+
+// setInterval(() => {
+//   document.getElementById('yourCardsInHand').innerHTML = ''
+
+
+// }, 500)
 
 function imready() {
   if (!am_i_ready) socket.emit('ready')
@@ -96,7 +109,7 @@ resizeHp(2, "enemysHealth");
 
 // ---------
 
-var cards = document.querySelectorAll('.cardsInHand .card');
+let cards = document.querySelectorAll('.cardsInHand .card');
     
 [].forEach.call(cards, function(el) {
     el.onclick = function(e) {
