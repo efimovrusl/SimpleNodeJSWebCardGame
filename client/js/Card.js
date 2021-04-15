@@ -17,6 +17,7 @@ class Card {
                                 <span>${this.hp}</span>
                                 <span>${this.cost}</span>
                              </div>`;
+        
         let idItem = document.getElementById(id);
         idItem.appendChild(newSpan);
 

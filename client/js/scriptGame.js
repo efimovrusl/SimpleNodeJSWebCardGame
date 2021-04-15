@@ -1,7 +1,5 @@
 // const { isObject } = require("node:util");
-setInterval(() => {
-  console.log("ASDIASUDYHASIDASDASDASDASDIUASIUDA")
-}, 1)
+
 let spiderman = new Card("Spider Man", 2, 4, 4, "assets/img/spiderman.jpg");
 let captanamerica = new Card("Captan America", 3, 5, 1, "assets/img/captanamerica.jpg");
 
@@ -10,7 +8,7 @@ let mycards = []
 let am_i_ready = false
 
 socket.on('game_state', data => {
-  console.log(data)
+  console.log(data.my_cards)
   am_i_ready = data.im_ready
   if (data.my_cards)
   data.my_cards.forEach((card) => { mycards.push(new Card(card.name, card.str, card.hp, card.cost, card.url)) })
@@ -18,6 +16,13 @@ socket.on('game_state', data => {
     if (data.im_playing) open_fight()
     else open_waiting()
   }
+
+
+  document.querySelector(".cardsInHand .card").remove();
+
+
+  mycards.forEach(card => card.render('yourCardsInHand'));
+
 })
 
 function imready() {
@@ -27,10 +32,8 @@ function imready() {
 
 spiderman.render('enemyCard');
 captanamerica.render('yourCard');
-
-spiderman.render('yourCardsInHand');
-captanamerica.render('yourCardsInHand');
-spiderman.render('yourCardsInHand');
+// captanamerica.render('yourCardsInHand');
+// spiderman.render('yourCardsInHand');
 
 // ---- Resizing ----
 
@@ -96,8 +99,9 @@ resizeHp(2, "enemysHealth");
 var cards = document.querySelectorAll('.cardsInHand .card');
     
 [].forEach.call(cards, function(el) {
-    
     el.onclick = function(e) {
+    console.log(el);
+
         el.classList.add("active");
         setTimeout(function(){el.classList.add("transparent")}, 300);
         setTimeout(function(){el.remove()}, 600);

@@ -38,16 +38,17 @@ class Card {
   url
   constructor(round, curr_cards) {
     let chosenID
+    let hasEnoughMana = false
     do {
       chosenID = randomInt(0, 22)
-      let hasEnoughMana = false
+      hasEnoughMana = false
       curr_cards.forEach((card) => { if (card.cost <= round) hasEnoughMana = true })
       if (this.cards[chosenID].cost <= round) hasEnoughMana = true
     } while (curr_cards.includes(this.cards[chosenID]) || !hasEnoughMana)
-    str = this.cards[chosenID].str
-    hp = this.cards[chosenID].hp
-    cost = this.cards[chosenID].cost
-    url = this.cards[chosenID].url
+    this.str = this.cards[chosenID].str
+    this.hp = this.cards[chosenID].hp
+    this.cost = this.cards[chosenID].cost
+    this.url = this.cards[chosenID].url
   }
 }
 
@@ -72,14 +73,13 @@ module.exports = class Battle {
 
 
     this.update_interval = setInterval(() => {
+      console.log(this.state)
       this.users = []
       Users.forEach(user => { this.users.push(user) })
       switch(this.state) {
         case stateEnum.waiting:
           let ready_users = this.users.filter(user => user.is_ready)
-          console.log(ready_users.length)
           if (ready_users.length >= 2) {
-            // console.log("IM FUCKED")
             this.players.push(ready_users[0])
             this.players.push(ready_users[1])
             this.users.forEach(user => { user.is_ready = false })
@@ -103,6 +103,7 @@ module.exports = class Battle {
                   this.toggled_interval = null
                   this.toggled_timeout = null
                   this.deal_cards()
+
                 }, 1000)
               }
             }, 1000)
@@ -113,7 +114,9 @@ module.exports = class Battle {
             this.timer = 30
             this.toggled_interval = setInterval(() => {
               this.timer--
+
               if (this.timer <= 0) {
+
                 this.timer = 0
                 clearInterval(this.toggled_interval)
                 this.toggled_interval = '1sectimer'
@@ -125,17 +128,21 @@ module.exports = class Battle {
                   this.deal_cards()
                 }, 1000)
               }
+              for (let i = 0; i < 2; i++) {
+                this.players[i].socket.on('use_card', (card_id) => {
+                  if (this.cards[i,card_id].cost <= this.round && !this.made_move[i])
+                    this.made_move[i] = true
+                    this.used_card[i] = card_id
+
+                    this.cards[i,card_id] = null
+                    this.cards[i] = this.cards[i].filter(card => card != null)
+                    this.players[i].socket.off('use_card')
+                })
+              }
             }, 1000)
-            for (let i = 0; i < 2; i++) {
-              this.players[i].socket.on('use_card', (card_id) => {
-                if (this.cards[i,card_id].cost <= this.round && !this.made_move[i])
-                  this.made_move[i] = true
-                  this.used_card[i] = card_id
-                  this.cards[i,card_id] = null
-                  this.cards[i] = this.cards[i].filter(card => card != null)
-                  this.players[i].socket.off('use_card')
-              })
-            }
+
+            
+
           }
           break;
         case stateEnum.showdown:
@@ -148,7 +155,7 @@ module.exports = class Battle {
                 clearInterval(this.toggled_interval)
                 this.toggled_interval = '1sectimer'
                 this.toggled_timeout = setTimeout(() => {
-                  if (round <= 6) {
+                  if (this.round <= 6) {
                     this.state = stateEnum.move
                     for (let i = 0; i < 2; i++) {
                       this.used_card[i] = null
@@ -189,8 +196,9 @@ module.exports = class Battle {
 
   deal_cards() {
     for (let i = 0; i < 2; i++)
-      while (cards[i].length < 3)
-        cards[i].push(new Card(this.round, cards[i]))
+      for (let j = 0; j < 3; j++)
+        this.cards[i].push(new Card(this.round, this.cards[i]))
+    
   }
 
   update() {
@@ -207,7 +215,7 @@ module.exports = class Battle {
     // }
     this.toggled_interval = null
     this.state = stateEnum.waiting
-    this.players = null
+    this.players = []
     this.timer = 3
     this.round = 1
     this.cards = [[],[]]
@@ -228,7 +236,6 @@ module.exports = class Battle {
 
   getEnemyLogin(socket) {
     if (this.state == stateEnum.waiting) return null
-    // console.log(this.users)
     if (this.users[0].socket.handshake.address == socket.handshake.address) return this.users[1].login
     else return this.users[0].login
   }
