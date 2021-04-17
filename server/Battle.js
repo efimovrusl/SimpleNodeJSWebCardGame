@@ -8,29 +8,29 @@ const stateEnum = {
 
 class Card {
   cards = [
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'https://drive.google.com/file/d/1J7o_-lpHYT0esxbKbO3aVGhldSztd0PH/view?usp=sharing' },
-    { name: 'card', str: 3, hp: 1, cost: 1, url: 'https://drive.google.com/file/d/1EWKXC8A19skWsDeLxfFiZgBwPZny1CSD/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'https://drive.google.com/file/d/1FzJSXMX3sjXM1q8mOE_GUGvwKF2GYhMH/view?usp=sharing' },
-    { name: 'card', str: 1, hp: 2, cost: 1, url: 'https://drive.google.com/file/d/19xNDqE9G3eBMaBCfSxNVN6UCjuLfg1EL/view?usp=sharing' },
-    { name: 'card', str: 1, hp: 4, cost: 1, url: 'https://drive.google.com/file/d/1P_tzeclAw96GfcqLBREkzOEH5utvAhbA/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'https://drive.google.com/file/d/199yfWNjXpS3TTYS3dKx9VqBvYizYjWy4/view?usp=sharing' },
-    { name: 'card', str: 3, hp: 2, cost: 1, url: 'https://drive.google.com/file/d/1qLucUpSK-4Tvvtw4FkPmpjTCVhfYQcKS/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'https://drive.google.com/file/d/1QhHvUb8wtbsgvWG49vW0ymsL9c9wZRXc/view?usp=sharing' },
-    { name: 'card', str: 3, hp: 2, cost: 2, url: 'https://drive.google.com/file/d/1rD0jPGyAw6aNruSxIXyvuKyNC44weywj/view?usp=sharing' },
-    { name: 'card', str: 4, hp: 2, cost: 2, url: 'https://drive.google.com/file/d/1MO01WfPAyAZUlvpTV5iOGv-UGeEAhHkX/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 4, cost: 2, url: 'https://drive.google.com/file/d/1RHdxWcZ9zhQuLoAISUvfsO_9bwXv-UIG/view?usp=sharing' },
-    { name: 'card', str: 3, hp: 2, cost: 2, url: 'https://drive.google.com/file/d/13q2gsHvYwOVz1zJmp0QCpaqj5dt3_6ux/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 3, cost: 2, url: 'https://drive.google.com/file/d/1QksautMDNwB3dpzl-r1eiU7Mewijtc5Q/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 5, cost: 3, url: 'https://drive.google.com/file/d/1sHUaevUAiTbRi2ifkz8DcGd6V3fLe0Ao/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 3, cost: 3, url: 'https://drive.google.com/file/d/1LElyREx6QOkCp228PYUQO9JuCG296WD_/view?usp=sharing' },
-    { name: 'card', str: 4, hp: 2, cost: 3, url: 'https://drive.google.com/file/d/1ehH82V4oT4LmbbwGFxouQ0bq5bkB9oNP/view?usp=sharing' },
-    { name: 'card', str: 5, hp: 3, cost: 4, url: 'https://drive.google.com/file/d/1oj3iedyXMnzQEyl_IKZzhJVJgG3BPecb/view?usp=sharing' },
-    { name: 'card', str: 4, hp: 4, cost: 4, url: 'https://drive.google.com/file/d/1-MgSj6mbbhO57Mjq3kx3UE5RJJfdbRlb/view?usp=sharing' },
-    { name: 'card', str: 4, hp: 5, cost: 5, url: 'https://drive.google.com/file/d/1IJeDom88fX0Kx5GT5D_Vs7TzRxkKb_Wq/view?usp=sharing' },
-    { name: 'card', str: 2, hp: 6, cost: 5, url: 'https://drive.google.com/file/d/1RlmYZrt9zE6pcSYxmIUnFuRtf6ggYzSO/view?usp=sharing' },
-    { name: 'card', str: 6, hp: 5, cost: 6, url: 'https://drive.google.com/file/d/11dmNC2THwKjUt76RlMVPzdnW83NdIaVZ/view?usp=sharing' },
-    { name: 'card', str: 5, hp: 6, cost: 6, url: 'https://drive.google.com/file/d/1a-R53-56c5UbIWtZPuc8qeDgH8Yg6v4o/view?usp=sharing' },
-    { name: 'card', str: 7, hp: 7, cost: 7, url: 'https://drive.google.com/file/d/1Z2y6LLiooXbCPIcE2iYcjUNjYFTcQ0iy/view?usp=sharing' },
+    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/1.jpeg' },
+    { name: 'card', str: 3, hp: 1, cost: 1, url: 'assets/img/cards/2.jpeg' },
+    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/3.jpeg' },
+    { name: 'card', str: 1, hp: 2, cost: 1, url: 'assets/img/cards/4.jpeg' },
+    { name: 'card', str: 1, hp: 4, cost: 1, url: 'assets/img/cards/5.jpeg' },
+    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/6.jpeg' },
+    { name: 'card', str: 3, hp: 2, cost: 1, url: 'assets/img/cards/7.jpeg' },
+    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/8.jpeg' },
+    { name: 'card', str: 3, hp: 2, cost: 2, url: 'assets/img/cards/9.jpeg' },
+    { name: 'card', str: 4, hp: 2, cost: 2, url: 'assets/img/cards/10.jpeg' },
+    { name: 'card', str: 2, hp: 4, cost: 2, url: 'assets/img/cards/11.jpeg' },
+    { name: 'card', str: 3, hp: 2, cost: 2, url: 'assets/img/cards/12.jpeg' },
+    { name: 'card', str: 2, hp: 3, cost: 2, url: 'assets/img/cards/13.jpeg' },
+    { name: 'card', str: 2, hp: 5, cost: 3, url: 'assets/img/cards/14.jpeg' },
+    { name: 'card', str: 2, hp: 3, cost: 3, url: 'assets/img/cards/15.jpeg' },
+    { name: 'card', str: 4, hp: 2, cost: 3, url: 'assets/img/cards/16.jpeg' },
+    { name: 'card', str: 5, hp: 3, cost: 4, url: 'assets/img/cards/17.jpeg' },
+    { name: 'card', str: 4, hp: 4, cost: 4, url: 'assets/img/cards/18.jpeg' },
+    { name: 'card', str: 4, hp: 5, cost: 5, url: 'assets/img/cards/19.jpeg' },
+    { name: 'card', str: 2, hp: 6, cost: 5, url: 'assets/img/cards/20.jpeg' },
+    { name: 'card', str: 6, hp: 5, cost: 6, url: 'assets/img/cards/21.jpeg' },
+    { name: 'card', str: 5, hp: 6, cost: 6, url: 'assets/img/cards/22.jpeg' },
+    { name: 'card', str: 7, hp: 7, cost: 7, url: 'assets/img/cards/23.jpeg' },
   ]
   str
   hp
@@ -73,7 +73,7 @@ module.exports = class Battle {
 
 
     this.update_interval = setInterval(() => {
-      console.log(this.state)
+      // console.log(this.state)
       this.users = []
       Users.forEach(user => { this.users.push(user) })
       switch(this.state) {

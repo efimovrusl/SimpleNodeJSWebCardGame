@@ -5,7 +5,7 @@ let captanamerica = new Card("Captan America", 3, 5, 1, "assets/img/captanameric
 
 
 let mycards = []
-let am_i_ready = false
+var am_i_ready = false
 
 socket.on('game_state', data => {
   console.log(data.my_cards)
@@ -18,6 +18,10 @@ socket.on('game_state', data => {
     else open_waiting()
   }
   
+
+  mycards.forEach(card => {
+    card.delete()
+  })
   mycards.forEach(card => {
     card.render('yourCardsInHand')
   });

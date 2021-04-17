@@ -7,6 +7,7 @@ const http = require('http').createServer()
 const io = require('socket.io')(http, {
   cors: { origin: "*" }
 });
+io.setMaxListeners(0)
 
 const DbConnection = require('./DbConnection.js')
 const User = require('./User.js')
@@ -70,10 +71,17 @@ io.on('connection', (socket) => {
     users.get(socket.handshake.address).is_ready = false
   })
   /* SENDING GAME CURRENT STATE */
-  let send_info_interval = setInterval(() => {
-    socket.on('disconnect', () => {
-      clearInterval(send_info_interval)
-    })
+  
+  let send_info_interval 
+  socket.on('disconnect', () => {
+    clearInterval(send_info_interval)
+  })
+  send_info_interval = setInterval(() => {
+    // if () {
+    //   clearInterval(send_info_interval)
+    //   stop = true
+    // }
+    // if (stop) return
     let online_users = []
     users.forEach(user => { if (user.socket.handshake.address != socket.handshake.address) online_users.push(user.login) })
     socket.emit('game_state', {

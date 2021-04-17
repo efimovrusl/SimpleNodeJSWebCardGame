@@ -1,4 +1,6 @@
 class Card {
+    delete = () => {}
+
     constructor(name, str, hp, cost, img) {
         this.name = name;
         this.str = str;
@@ -20,9 +22,9 @@ class Card {
         
         let idItem = document.getElementById(id);
         idItem.appendChild(newSpan);
-        // setTimeout(() => {
-        //     document.getElementById(id).innerHTML = ''
-        // },50)
+        this.container = id
+        setTimeout(() => {document.getElementById(id).innerHTML = ''}, 200)
+        // this.delete = () => {document.getElementById(id).innerHTML = ''}
     }
 
 }
