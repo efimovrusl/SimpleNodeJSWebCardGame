@@ -1,8 +1,3 @@
-// const { isObject } = require("node:util");
-
-const { start } = require("node:repl")
-
-
 let enemyUsedCard = null
 let myUsedCard = null
 let timer = 0

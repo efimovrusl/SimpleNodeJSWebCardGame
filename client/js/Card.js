@@ -1,5 +1,3 @@
-// const { Socket } = require("node:dgram")
-
 class Card {
     // parentEl
     // element
