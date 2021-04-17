@@ -219,8 +219,6 @@ module.exports = class Battle {
     // }
     this.toggled_interval = null
     this.state = stateEnum.waiting
-    this.players[0].is_playing = false
-    this.players[1].is_playing = false
     this.players = []
     this.timer = 3
     this.round = 1

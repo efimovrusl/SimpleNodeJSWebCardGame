@@ -10,8 +10,8 @@ class Card {
     is_transparent
     id
 
-    constructor(name = "unknown", str = '?', hp = '?', cost = '?', img = "assets/img/cards/secret_card.jpg", 
-        dom_element = null, id = NaN) {
+    constructor(dom_element, id = -1, name = "unknown", str = '?', hp = '?', cost = '?', 
+        img = "assets/img/cards/secret_card.jpg") {
         this.name = name;
         this.str = str;
         this.hp = hp;
@@ -20,6 +20,7 @@ class Card {
         this.dom_element = dom_element;
         this.is_transparent = (this.name == null)
         this.id = id
+        fuck(dom_element)
         this.dom_element.onclick = () => {
             socket.emit('use_card', this.id)
             socket.once('use_result', result => {
@@ -50,16 +51,18 @@ class Card {
     }
 
     show() {
-        this.dom_element.classList.remove("transparent")
+        if (this.dom_element) this.dom_element.classList.remove("transparent")
     }
 
     hide(timeout = 0) {
-        setTimeout(() => { this.dom_element.classList.add("transparent") }, timeout)
+        setTimeout(() => { if (this.dom_element) this.dom_element?.classList.add("transparent") }, timeout)
     }
 
     move() {
-        this.dom_element.classList.add("active")
-        setTimeout(() => { this.dom_element.classList.remove("active") }, 600)
+        if (this.dom_element) {
+            this.dom_element?.classList.add("active")
+            setTimeout(() => { this.dom_element?.classList.remove("active") }, 600)
+        }
     }
 
     // render(id) {

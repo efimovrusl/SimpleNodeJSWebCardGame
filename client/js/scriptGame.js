@@ -9,20 +9,28 @@ let am_i_playing = false
 
 
 function startNewGame() {
-  enemyUsedCard = new Card({ name: "Enemy card" })
-  myUsedCard = new Card({ name: "Your card" });
+  
+  // fuck("ASDASDAS" + document.getElementById('enemyChosenCard'))
+  // enemyUsedCard = new Card({ name: "Enemy card", dom_element: document.querySelector("#enemyChosenCard") })
+  // myUsedCard = new Card({ name: "Your card", dom_element: document.querySelector("#myChosenCard") });
+
+  enemyUsedCard = new Card(document.querySelector("#enemyChosenCard"));
+  
+  myUsedCard = new Card(document.querySelector("#myChosenCard"));
+
   timer = 3
   round = 0
   mycards = [
-    new Card({ dom_element: document.getElementById('card1'), id: 0 }),
-    new Card({ dom_element: document.getElementById('card2'), id: 1 }),
-    new Card({ dom_element: document.getElementById('card3'), id: 2 }),
+    new Card(document.querySelector("#card1"), 0),
+    new Card(document.querySelector("#card2"), 1),
+    new Card(document.querySelector("#card3"), 2),
   ]
 
 }
 
 
 let game_state_update = socket.on('game_state', data => {
+  // fuck("I'm playing: " + am_i_playing)
   console.log(data.my_cards)
   am_i_ready = data.im_ready
   if (!am_i_playing && data.im_playing)
@@ -60,8 +68,8 @@ function imready() {
   // else socket.emit('unready')
 }
 
-enemyCard.render('enemyCard');
-myUsedCard.render('yourCard');
+// enemyCard.render('enemyCard');
+// myUsedCard.render('yourCard');
 
 // ---- Resizing ----
 
@@ -83,7 +91,7 @@ function resizeHp(index, id) {
   let el = document.getElementById(id).getElementsByTagName('span')[0];
   let i = maxHp - (index);
   switch(index) {
-    case 0:  
+    case 0:
       el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
       el.style.backgroundColor = "rgb(102, 189, 80)";
       break;
@@ -130,3 +138,19 @@ resizeHp(2, "enemysHealth");
 //     setTimeout(function(){el.classList.remove("active")}, 600);
 //   }
 // });
+
+
+
+
+
+
+
+function fuck(message) {
+  if (__local_shit)
+    clearInterval(__local_shit)
+  __local_shit = setTimeout(() => {
+    console.log(">>>> " + message + " <<<<")
+  },1)
+}
+
+let __local_shit = null
