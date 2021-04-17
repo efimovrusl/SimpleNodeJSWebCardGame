@@ -63,7 +63,7 @@ module.exports = class Battle {
   round = 1
   cards = [[],[]] // array of arrays of users' cards
   mana = [1, 1]
-  made_move = [ false, false ] // did player[id] make a mode
+  made_move = [ false, false ] // did player[id] make a move
   used_card = [ false, false ] // array of two chosen cards
   hp = [ 5, 5 ]
   winner = null
@@ -130,13 +130,17 @@ module.exports = class Battle {
               }
               for (let i = 0; i < 2; i++) {
                 this.players[i].socket.on('use_card', (card_id) => {
-                  if (this.cards[i,card_id].cost <= this.round && !this.made_move[i])
+                  if (this.cards[i,card_id].cost <= this.round && !this.made_move[i]) {
                     this.made_move[i] = true
                     this.used_card[i] = card_id
 
                     this.cards[i,card_id] = null
                     this.cards[i] = this.cards[i].filter(card => card != null)
                     this.players[i].socket.off('use_card')
+                    this.players[i].socket.emit('use_result', { result: true, id: card_id })
+                  } else {
+                    this.players[i].socket.emit('use_result', { result: false, id: card_id })
+                  }
                 })
               }
             }, 1000)
@@ -215,6 +219,8 @@ module.exports = class Battle {
     // }
     this.toggled_interval = null
     this.state = stateEnum.waiting
+    this.players[0].is_playing = false
+    this.players[1].is_playing = false
     this.players = []
     this.timer = 3
     this.round = 1
@@ -230,8 +236,8 @@ module.exports = class Battle {
     if (this.players && this.players.length == 2) {
       if (this.players[0].socket.handshake.address == socket.handshake.address) return this.cards[0]
       else if (this.players[1].socket.handshake.address == socket.handshake.address) return this.cards[1]
-      else return null
-    } else return null
+      else return []
+    } else return []
   }
 
   getEnemyLogin(socket) {

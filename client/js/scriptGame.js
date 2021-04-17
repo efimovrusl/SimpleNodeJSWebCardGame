@@ -1,109 +1,119 @@
 // const { isObject } = require("node:util");
 
-let spiderman = new Card("Spider Man", 2, 4, 4, "assets/img/spiderman.jpg");
-let captanamerica = new Card("Captan America", 3, 5, 1, "assets/img/captanamerica.jpg");
+const { start } = require("node:repl")
 
+
+let enemyUsedCard = null
+let myUsedCard = null
+let timer = 0
+let round = 0
 
 let mycards = []
-var am_i_ready = false
+let am_i_ready = false
+let am_i_playing = false
 
-socket.on('game_state', data => {
+
+function startNewGame() {
+  enemyUsedCard = new Card({ name: "Enemy card" })
+  myUsedCard = new Card({ name: "Your card" });
+  timer = 3
+  round = 0
+  mycards = [
+    new Card({ dom_element: document.getElementById('card1'), id: 0 }),
+    new Card({ dom_element: document.getElementById('card2'), id: 1 }),
+    new Card({ dom_element: document.getElementById('card3'), id: 2 }),
+  ]
+
+}
+
+
+let game_state_update = socket.on('game_state', data => {
   console.log(data.my_cards)
   am_i_ready = data.im_ready
-  mycards = []
-  if (data.my_cards)
-  data.my_cards.forEach((card) => { mycards.push(new Card(card.name, card.str, card.hp, card.cost, card.url)) })
+  if (!am_i_playing && data.im_playing)
+    startNewGame()
+  am_i_playing = data.im_playing
+  timer = data.game_timer
+
+  // updating cards // if card's changed, it shows if was hidden before
+  for (let i = 0; i < data.my_cards.length; i++) mycards[i].set(data.my_cards[i])
+
   if (data.im_loginned) {
-    if (data.im_playing) open_fight()
-    else open_waiting()
+    if (data.im_playing) {
+      open_fight()
+    } else {
+      open_waiting()
+      am_i_playing = false
+    }
   }
-  
-
-  mycards.forEach(card => {
-    card.delete()
-  })
-  mycards.forEach(card => {
-    card.render('yourCardsInHand')
-  });
-
-
-// [].forEach.call(document.querySelectorAll('.cardsInHand .card'), function(el) {
-//     el.remove();
-// });
-  
 
 })
 
-// setInterval(() => {
-//   document.getElementById('yourCardsInHand').innerHTML = ''
-
-
-// }, 500)
+/*  im_loginned: !!users.get(socket.handshake.address).login, // boolean
+    im_ready: users.get(socket.handshake.address).is_ready, // boolean
+    im_playing: users.get(socket.handshake.address).is_playing, // boolean
+    other_players: online_users, // array of logins <string>
+    game_is_going_on: !!battle.state, // 0 is waiting for players
+    game_state: battle.state, // stateEnum
+    game_timer: battle.timer, // seconds
+    enemy: battle.getEnemyLogin(socket),
+    my_cards: battle.getMyCards(socket),
+    round: battle.round                                                 */
 
 function imready() {
   if (!am_i_ready) socket.emit('ready')
   // else socket.emit('unready')
 }
 
-spiderman.render('enemyCard');
-captanamerica.render('yourCard');
-// captanamerica.render('yourCardsInHand');
-// spiderman.render('yourCardsInHand');
+enemyCard.render('enemyCard');
+myUsedCard.render('yourCard');
 
 // ---- Resizing ----
 
 function calcScale(averageWidth, clas) {
-    let path = document.getElementsByClassName(clas);
-    let width = document.body.clientWidth;
-    let x = width * 1/ averageWidth;
-    for (el of path) {
-        el.style.transform = `scale(${x})`
-    }
+  let path = document.getElementsByClassName(clas);
+  let width = document.body.clientWidth;
+  let x = width * 1/ averageWidth;
+  for (el of path) el.style.transform = `scale(${x})`
 }
 
-setInterval(function() {
-    calcScale(1280, "hud");
-}, 100);
-setInterval(function() {
-    calcScale(1280, "cardOnField");
-}, 100);
-setInterval(function() {
-    calcScale(1090, "cardsInHand");
-}, 100);
+setInterval(function() { calcScale(1280, "hud"); }, 100);
+setInterval(function() { calcScale(1280, "cardOnField"); }, 100);
+setInterval(function() { calcScale(1090, "cardsInHand"); }, 100);
 
 // resizing hp
 
 function resizeHp(index, id) {
-    let maxHp = 5;
-    let el = document.getElementById(id).getElementsByTagName('span')[0];
-    let i = maxHp - (index);
-    switch(index) {
-        case 0:  
-          el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
-          el.style.backgroundColor = "rgb(102, 189, 80)";
-          break;
-        case 1:  
-          el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
-          el.style.backgroundColor = "rgb(224, 80, 44)";
-          break;
-        case 2:  
-          el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
-          el.style.backgroundColor = "rgb(224, 146, 44)";
-          break;
-        case 3:  
-          el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
-          el.style.backgroundColor = "rgb(221, 211, 67)";
-          break;
-        case 4:  
-          el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
-          el.style.backgroundColor = "rgb(163, 206, 65)";
-          break;
-        case 5:  
-          el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
-          el.style.backgroundColor = "rgb(102, 189, 80)";
-          break;
-       
-      }
+  let maxHp = 5;
+  let el = document.getElementById(id).getElementsByTagName('span')[0];
+  let i = maxHp - (index);
+  switch(index) {
+    case 0:  
+      el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
+      el.style.backgroundColor = "rgb(102, 189, 80)";
+      break;
+    case 1:  
+      el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
+      el.style.backgroundColor = "rgb(224, 80, 44)";
+      break;
+    case 2:  
+      el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
+      el.style.backgroundColor = "rgb(224, 146, 44)";
+      break;
+    case 3:  
+      el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
+      el.style.backgroundColor = "rgb(221, 211, 67)";
+      break;
+    case 4:  
+      el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
+      el.style.backgroundColor = "rgb(163, 206, 65)";
+      break;
+    case 5:  
+      el.style.transform  = `scaleX(calc(1 - ${(1 / maxHp) * i}))`;
+      el.style.backgroundColor = "rgb(102, 189, 80)";
+      break;
+    
+  }
 }
 
 resizeHp(3, "yourHealth");
@@ -111,14 +121,17 @@ resizeHp(2, "enemysHealth");
 
 // ---------
 
-let cards = document.querySelectorAll('.cardsInHand .card');
-    
-[].forEach.call(cards, function(el) {
-    el.onclick = function(e) {
-    console.log(el);
+// let cards = document.querySelectorAll('.cardsInHand .card');
 
-        el.classList.add("active");
-        setTimeout(function(){el.classList.add("transparent")}, 300);
-        setTimeout(function(){el.remove()}, 600);
-    }
-});
+
+    
+// [].forEach.call(cards, function(el) {
+//   el.onclick = function(e) {
+//     console.log(el);
+    
+//     el.classList.add("active");
+//     setTimeout(function(){el.classList.add("transparent")}, 300);
+//     // setTimeout(function(){el.remove()}, 600);
+//     setTimeout(function(){el.classList.remove("active")}, 600);
+//   }
+// });

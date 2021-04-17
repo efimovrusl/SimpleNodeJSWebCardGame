@@ -94,6 +94,7 @@ io.on('connection', (socket) => {
       game_timer: battle.timer, // seconds
       enemy: battle.getEnemyLogin(socket),
       my_cards: battle.getMyCards(socket),
+      round: battle.round
     })
     // console.log(users.size)
   }, 50)
