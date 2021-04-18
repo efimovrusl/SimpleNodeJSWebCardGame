@@ -5,7 +5,7 @@ const stateEnum = {
   "showdown": 3,
   "results": 4
 }
-
+const secret_card = { name: 'secret_card', str: '?', hp: '?', cost: '?', url: 'assets/img/cards/secret_card.jpg' }
 class Card {
   cards = [
     { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/1.jpeg' },
@@ -58,7 +58,7 @@ class Card {
     this.url = new_card.url
   }
   set_secret() {
-    this.set({ name: 'secret_card', str: '?', hp: '?', cost: '?', url: 'assets/img/cards/secret_card.jpg' })
+    this.set(secret_card)
   }
 }
 
@@ -72,15 +72,16 @@ module.exports = class Battle {
   toggled_timeout = null
   round = 1
   cards = [[],[]] // need to be nullified with this.nullifyCards()
-  mana = [1, 1]
+  mana = [ 1, 1 ]
   made_move = [ false, false ] // did player[id] make a move
-  used_card = [ false, false ] // array of two chosen cards
+  used_card = [ null, null ] // array of two chosen cards
   hp = [ 5, 5 ]
   winner = null
 
   /** @param {Map} Users */
   constructor(Users) {
     this.nullifyCards()
+    
 
 
     this.update_interval = setInterval(() => {
@@ -98,6 +99,7 @@ module.exports = class Battle {
             this.players[0].is_playing = true
             this.players[1].is_playing = true
             this.state = stateEnum.countdown
+            this.listenForCardUses()
           }
 
           break;
@@ -128,7 +130,6 @@ module.exports = class Battle {
               this.timer--
 
               if (this.timer <= 0) {
-
                 this.timer = 0
                 clearInterval(this.toggled_interval)
                 this.toggled_interval = '1sectimer'
@@ -140,31 +141,7 @@ module.exports = class Battle {
                   this.deal_cards()
                 }, 1000)
               }
-              for (let i = 0; i < 2; i++) {
-                this.players[i].socket.on('use_card', card_id => {
-                  console.log(`USE CARD: ${card_id} if(${this.cards[i][card_id]}`)
-                  if (this.cards[i][card_id]
-                    && this.cards[i][card_id].cost <= this.round 
-                    && !this.made_move[i]) {
-                    console.log(`CARD #${card_id} USED`)
-
-                    this.made_move[i] = true
-                    // this.used_card[i] = card_id
-                    this.used_card[i] = this.cards[i][card_id]
-
-
-                    this.cards[i][card_id].set_secret()
-                    this.players[i].socket.removeAllListeners('use_card')
-                    this.players[i].socket.emit('use_result', { result: true, id: card_id })
-                  } else {
-                    this.players[i].socket.emit('use_result', { result: false, id: card_id })
-                  }
-                })
-              }
             }, 1000)
-
-            
-
           }
           break;
         case stateEnum.showdown:
@@ -210,12 +187,9 @@ module.exports = class Battle {
             this.timer = 10
             this.toggled_interval = setInterval(() => {
               this.timer--
-              if (this.timer <= 0) {
-                // nullifying all values to initial Battle state
-                this.end()
-              }
+              // nullifying all values to initial Battle state
+              if (this.timer <= 0) this.end()
             }, 1000)
-  
           }
           break;
       }
@@ -224,12 +198,9 @@ module.exports = class Battle {
 
   deal_cards() {
     for (let i = 0; i < 2; i++)
-    for (let j = 0; j < 3; j++) {
-      if (this.cards[i][j].name == 'secret_card')
-        this.cards[i][j] = new Card(this.round, this.cards[i])
-
-      }
-    
+      for (let j = 0; j < 3; j++)
+        if (this.cards[i][j].name == 'secret_card')
+          this.cards[i][j] = new Card(this.round, this.cards[i])
   }
 
   update() {
@@ -237,13 +208,8 @@ module.exports = class Battle {
   }
 
   end() {
-    // if (this.toggled_interval != null && this.toggled_interval != '1sectimer') {
-      clearInterval(this.toggled_interval)
-    // }
-    // if (this.toggled_interval == '1sectimer' && this.toggled_timeout != null) {
-    //   this.toggled_interval = null
-      clearTimeout(this.toggled_timeout)
-    // }
+    clearInterval(this.toggled_interval)
+    clearTimeout(this.toggled_timeout)
     this.toggled_interval = null
     this.state = stateEnum.waiting
     this.players.forEach(user => user.is_playing = false)
@@ -253,7 +219,7 @@ module.exports = class Battle {
     this.nullifyCards()
     this.mana = [1, 1]
     this.made_move = [ false, false ]
-    this.used_card = [ false, false ]
+    this.used_card = [ null, null ]
     this.hp = [ 5, 5 ]
     this.winner = null
   }
@@ -272,12 +238,51 @@ module.exports = class Battle {
     else return this.users[0].login
   }
 
+  
+
+  myMove(socket) {
+    return this.#get_move(socket, 0)
+  }
+  enemyMove(socket) {
+    return this.#get_move(socket, 1)
+  }
+  #get_move(socket, my_or_enemy) {
+    if (this.players[0] && this.players[1]) {
+      let id = (this.players[0].socket.handshake.address == socket.handshake.address ? 0 : 1 + my_or_enemy) % 2
+      if (this.used_card[id] != null) return this.used_card[id]
+      else return secret_card
+    } else return secret_card
+  }
+
   nullifyCards() {
     this.cards = [[new Card(),new Card(),new Card()],
                   [new Card(),new Card(),new Card()]]
     for (let i = 0; i < 2; i++)
       for (let j = 0; j < 3; j++)
         this.cards[i][j].set_secret()
+  }
+
+  listenForCardUses() {
+    for (let i = 0; i < 2; i++) {
+      this.players[i].socket.on('use_card', card_id => {
+        console.log(`USE CARD: ${card_id}`)
+        if (this.cards[i][card_id].name != 'secret_card'
+          && this.cards[i][card_id].cost <= this.round 
+          && !this.made_move[i]) {
+          console.log(`CARD #${card_id} USED`)
+
+          this.made_move[i] = true
+          // this.used_card[i] = card_id
+          this.used_card[i] = this.cards[i][card_id]
+
+
+          this.cards[i][card_id].set_secret()
+          this.players[i].socket.emit('use_result', { result: true, id: card_id })
+        } else {
+          this.players[i].socket.emit('use_result', { result: false, id: card_id })
+        }
+      })
+    }
   }
 
 }

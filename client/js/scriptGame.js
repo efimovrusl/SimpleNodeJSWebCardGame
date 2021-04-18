@@ -1,5 +1,5 @@
-let enemyUsedCard = null
-let myUsedCard = null
+let enemyUsedCard = new Card(document.querySelector("#enemyChosenCard"), 'enemyUsedCard')
+let myUsedCard = new Card(document.querySelector("#myChosenCard"), 'myUsedCard')
 let timer = 0
 let round = 0
 
@@ -9,14 +9,6 @@ let am_i_playing = false
 
 
 function startNewGame() {
-  
-  // fuck("ASDASDAS" + document.getElementById('enemyChosenCard'))
-  // enemyUsedCard = new Card({ name: "Enemy card", dom_element: document.querySelector("#enemyChosenCard") })
-  // myUsedCard = new Card({ name: "Your card", dom_element: document.querySelector("#myChosenCard") });
-
-  enemyUsedCard = new Card(document.querySelector("#enemyChosenCard"));
-  
-  myUsedCard = new Card(document.querySelector("#myChosenCard"));
 
   timer = 3
   round = 0
@@ -30,13 +22,19 @@ function startNewGame() {
 
 
 let game_state_update = socket.on('game_state', data => {
-  // fuck("I'm playing: " + am_i_playing)
-  console.log(data.my_cards)
+
   am_i_ready = data.im_ready
   if (!am_i_playing && data.im_playing)
     startNewGame()
   am_i_playing = data.im_playing
   timer = data.game_timer
+  if (round != data.round) {
+    round = data.round
+
+  }
+  console.log(data.my_move)
+  myUsedCard.set(data.my_move)
+  enemyUsedCard.set(data.enemy_move)
 
   // updating cards // if card's changed, it shows if was hidden before
   for (let i = 0; i < data.my_cards.length; i++) mycards[i].set(data.my_cards[i])
@@ -68,9 +66,6 @@ function imready() {
   if (!am_i_ready) socket.emit('ready')
   // else socket.emit('unready')
 }
-
-// enemyCard.render('enemyCard');
-// myUsedCard.render('yourCard');
 
 // ---- Resizing ----
 
@@ -122,27 +117,6 @@ function resizeHp(index, id) {
 
 resizeHp(3, "yourHealth");
 resizeHp(2, "enemysHealth");
-
-// ---------
-
-// let cards = document.querySelectorAll('.cardsInHand .card');
-
-
-    
-// [].forEach.call(cards, function(el) {
-//   el.onclick = function(e) {
-//     console.log(el);
-    
-//     el.classList.add("active");
-//     setTimeout(function(){el.classList.add("transparent")}, 300);
-//     // setTimeout(function(){el.remove()}, 600);
-//     setTimeout(function(){el.classList.remove("active")}, 600);
-//   }
-// });
-
-
-
-
 
 
 

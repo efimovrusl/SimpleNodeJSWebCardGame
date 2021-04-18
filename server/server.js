@@ -95,9 +95,11 @@ io.on('connection', (socket) => {
       game_timer: battle.timer, // seconds
       enemy: battle.getEnemyLogin(socket),
       my_cards: battle.getMyCards(socket),
-      round: battle.round
+      round: battle.round,
+      my_move: battle.myMove(socket),
+      enemy_move: battle.enemyMove(socket),
     })
-    // console.log(users.size)
+    
   }, 50)
 
 
@@ -123,4 +125,4 @@ setInterval(() => {
   users.forEach((user) => {
     console.log(user.serialize())
   })
-}, 2000)
+}, 1000)
