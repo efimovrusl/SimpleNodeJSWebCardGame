@@ -29,7 +29,6 @@ class Card {
                 }
             })
         }
-        this.hide()
         this.update()
     }
 

@@ -32,13 +32,10 @@ class Card {
     { name: 'card', str: 5, hp: 6, cost: 6, url: 'assets/img/cards/22.jpeg' },
     { name: 'card', str: 7, hp: 7, cost: 7, url: 'assets/img/cards/23.jpeg' },
   ]
-  secret_card = 
-    { name: 'card', str: '?', hp: '?', cost: '?', url: 'assets/img/cards/secret_card.jpg' }
-  str
-  hp
-  cost
-  url
-  constructor(round, curr_cards) {
+  constructor(round = 'default', curr_cards_unfiltered = null) {
+    if (round == 'default') return
+    let curr_cards = curr_cards_unfiltered.filter(card => card.name != 'secret_card')
+    console.log("YOU HAVE " + curr_cards.length + " CARDS")
     let chosenID
     let hasEnoughMana = false
     do {
@@ -47,10 +44,21 @@ class Card {
       curr_cards.forEach((card) => { if (card.cost <= round) hasEnoughMana = true })
       if (this.cards[chosenID].cost <= round) hasEnoughMana = true
     } while (curr_cards.includes(this.cards[chosenID]) || !hasEnoughMana)
+    this.name = this.cards[chosenID].name
     this.str = this.cards[chosenID].str
     this.hp = this.cards[chosenID].hp
     this.cost = this.cards[chosenID].cost
     this.url = this.cards[chosenID].url
+  }
+  set(new_card) {
+    this.name = new_card.name
+    this.str = new_card.str
+    this.hp = new_card.hp
+    this.cost = new_card.cost
+    this.url = new_card.url
+  }
+  set_secret() {
+    this.set({ name: 'secret_card', str: '?', hp: '?', cost: '?', url: 'assets/img/cards/secret_card.jpg' })
   }
 }
 
@@ -63,7 +71,7 @@ module.exports = class Battle {
   update_interval = null
   toggled_timeout = null
   round = 1
-  cards = [[],[]] // array  q arrays of users' cards
+  cards = [[],[]] // need to be nullified with this.nullifyCards()
   mana = [1, 1]
   made_move = [ false, false ] // did player[id] make a move
   used_card = [ false, false ] // array of two chosen cards
@@ -72,12 +80,13 @@ module.exports = class Battle {
 
   /** @param {Map} Users */
   constructor(Users) {
+    this.nullifyCards()
 
 
     this.update_interval = setInterval(() => {
       // console.log(this.state)
       this.users = []
-      Users.forEach(user => { this.users.push(user) })
+      Users.forEach(user => this.users.push(user))
       if (this.users.length < 2) this.end()
       switch(this.state) {
         case stateEnum.waiting:
@@ -85,7 +94,7 @@ module.exports = class Battle {
           if (ready_users.length >= 2) {
             this.players.push(ready_users[0])
             this.players.push(ready_users[1])
-            this.users.forEach(user => { user.is_ready = false })
+            this.users.forEach(user => user.is_ready = false)
             this.players[0].is_playing = true
             this.players[1].is_playing = true
             this.state = stateEnum.countdown
@@ -132,7 +141,7 @@ module.exports = class Battle {
                 }, 1000)
               }
               for (let i = 0; i < 2; i++) {
-                this.players[i].socket.on('use_card', (card_id) => {
+                this.players[i].socket.on('use_card', card_id => {
                   console.log(`USE CARD: ${card_id} if(${this.cards[i][card_id]}`)
                   if (this.cards[i][card_id]
                     && this.cards[i][card_id].cost <= this.round 
@@ -144,7 +153,7 @@ module.exports = class Battle {
                     this.used_card[i] = this.cards[i][card_id]
 
 
-                    this.cards[i][card_id] = Card.secret_card
+                    this.cards[i][card_id].set_secret()
                     this.players[i].socket.removeAllListeners('use_card')
                     this.players[i].socket.emit('use_result', { result: true, id: card_id })
                   } else {
@@ -185,9 +194,15 @@ module.exports = class Battle {
               }
             }, 1000)
             // CALCULATING WHO WON ROUND
-            this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
-              || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
-            this.hp[this.winner]--
+            if (this.used_card[0] != null && this.used_card[1] == null) this.hp[1]--
+            else if (this.used_card[1] != null && this.used_card[0] == null) this.hp[0]--
+            else if (this.used_card[0] == null && this.used_card[1] == null) { this.hp[0]--; this.hp[1]-- }
+            else {
+              this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
+                || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
+              this.hp[this.winner ? 0 : 1]--
+            }
+
           }
           break;
         case stateEnum.results:
@@ -209,8 +224,11 @@ module.exports = class Battle {
 
   deal_cards() {
     for (let i = 0; i < 2; i++)
-      for (let j = 0; j < 3; j++)
-        this.cards[i].push(new Card(this.round, this.cards[i]))
+    for (let j = 0; j < 3; j++) {
+      if (this.cards[i][j].name == 'secret_card')
+        this.cards[i][j] = new Card(this.round, this.cards[i])
+
+      }
     
   }
 
@@ -232,7 +250,7 @@ module.exports = class Battle {
     this.players = []
     this.timer = 3
     this.round = 1
-    this.cards = [[],[]]
+    this.nullifyCards()
     this.mana = [1, 1]
     this.made_move = [ false, false ]
     this.used_card = [ false, false ]
@@ -254,6 +272,14 @@ module.exports = class Battle {
     else return this.users[0].login
   }
 
+  nullifyCards() {
+    this.cards = [[new Card(),new Card(),new Card()],
+                  [new Card(),new Card(),new Card()]]
+    for (let i = 0; i < 2; i++)
+      for (let j = 0; j < 3; j++)
+        this.cards[i][j].set_secret()
+  }
+
 }
 
 function randomInt(min, max) {
@@ -262,7 +288,7 @@ function randomInt(min, max) {
     min = max
     max = temp
   }
-  min -= 0.49
-  max += 0.49
+  min -= 0.49999
+  max += 0.49999
   return Math.round((Math.random() * (max - min) + min))
 }

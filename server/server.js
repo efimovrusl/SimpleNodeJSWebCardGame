@@ -9,6 +9,7 @@ const io = require('socket.io')(http, {
 });
 io.setMaxListeners(0)
 
+
 const DbConnection = require('./DbConnection.js')
 const User = require('./User.js')
 const Battle = require('./Battle.js')
