@@ -6,32 +6,33 @@ const stateEnum = {
   "results": 4
 }
 const secret_card = { name: 'secret_card', str: '?', hp: '?', cost: '?', url: 'assets/img/cards/secret_card.jpg' }
+const cards = [
+  { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/1.jpeg' },
+  { name: 'card', str: 3, hp: 1, cost: 1, url: 'assets/img/cards/2.jpeg' },
+  { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/3.jpeg' },
+  { name: 'card', str: 1, hp: 2, cost: 1, url: 'assets/img/cards/4.jpeg' },
+  { name: 'card', str: 1, hp: 4, cost: 1, url: 'assets/img/cards/5.jpeg' },
+  { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/6.jpeg' },
+  { name: 'card', str: 3, hp: 2, cost: 1, url: 'assets/img/cards/7.jpeg' },
+  { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/8.jpeg' },
+  { name: 'card', str: 3, hp: 2, cost: 2, url: 'assets/img/cards/9.jpeg' },
+  { name: 'card', str: 4, hp: 2, cost: 2, url: 'assets/img/cards/10.jpeg' },
+  { name: 'card', str: 2, hp: 4, cost: 2, url: 'assets/img/cards/11.jpeg' },
+  { name: 'card', str: 3, hp: 2, cost: 2, url: 'assets/img/cards/12.jpeg' },
+  { name: 'card', str: 2, hp: 3, cost: 2, url: 'assets/img/cards/13.jpeg' },
+  { name: 'card', str: 2, hp: 5, cost: 3, url: 'assets/img/cards/14.jpeg' },
+  { name: 'card', str: 2, hp: 3, cost: 3, url: 'assets/img/cards/15.jpeg' },
+  { name: 'card', str: 4, hp: 2, cost: 3, url: 'assets/img/cards/16.jpeg' },
+  { name: 'card', str: 5, hp: 3, cost: 4, url: 'assets/img/cards/17.jpeg' },
+  { name: 'card', str: 4, hp: 4, cost: 4, url: 'assets/img/cards/18.jpeg' },
+  { name: 'card', str: 4, hp: 5, cost: 5, url: 'assets/img/cards/19.jpeg' },
+  { name: 'card', str: 2, hp: 6, cost: 5, url: 'assets/img/cards/20.jpeg' },
+  { name: 'card', str: 6, hp: 5, cost: 6, url: 'assets/img/cards/21.jpeg' },
+  { name: 'card', str: 5, hp: 6, cost: 6, url: 'assets/img/cards/22.jpeg' },
+  { name: 'card', str: 7, hp: 7, cost: 7, url: 'assets/img/cards/23.jpeg' },
+]
 class Card {
-  cards = [
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/1.jpeg' },
-    { name: 'card', str: 3, hp: 1, cost: 1, url: 'assets/img/cards/2.jpeg' },
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/3.jpeg' },
-    { name: 'card', str: 1, hp: 2, cost: 1, url: 'assets/img/cards/4.jpeg' },
-    { name: 'card', str: 1, hp: 4, cost: 1, url: 'assets/img/cards/5.jpeg' },
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/6.jpeg' },
-    { name: 'card', str: 3, hp: 2, cost: 1, url: 'assets/img/cards/7.jpeg' },
-    { name: 'card', str: 2, hp: 2, cost: 1, url: 'assets/img/cards/8.jpeg' },
-    { name: 'card', str: 3, hp: 2, cost: 2, url: 'assets/img/cards/9.jpeg' },
-    { name: 'card', str: 4, hp: 2, cost: 2, url: 'assets/img/cards/10.jpeg' },
-    { name: 'card', str: 2, hp: 4, cost: 2, url: 'assets/img/cards/11.jpeg' },
-    { name: 'card', str: 3, hp: 2, cost: 2, url: 'assets/img/cards/12.jpeg' },
-    { name: 'card', str: 2, hp: 3, cost: 2, url: 'assets/img/cards/13.jpeg' },
-    { name: 'card', str: 2, hp: 5, cost: 3, url: 'assets/img/cards/14.jpeg' },
-    { name: 'card', str: 2, hp: 3, cost: 3, url: 'assets/img/cards/15.jpeg' },
-    { name: 'card', str: 4, hp: 2, cost: 3, url: 'assets/img/cards/16.jpeg' },
-    { name: 'card', str: 5, hp: 3, cost: 4, url: 'assets/img/cards/17.jpeg' },
-    { name: 'card', str: 4, hp: 4, cost: 4, url: 'assets/img/cards/18.jpeg' },
-    { name: 'card', str: 4, hp: 5, cost: 5, url: 'assets/img/cards/19.jpeg' },
-    { name: 'card', str: 2, hp: 6, cost: 5, url: 'assets/img/cards/20.jpeg' },
-    { name: 'card', str: 6, hp: 5, cost: 6, url: 'assets/img/cards/21.jpeg' },
-    { name: 'card', str: 5, hp: 6, cost: 6, url: 'assets/img/cards/22.jpeg' },
-    { name: 'card', str: 7, hp: 7, cost: 7, url: 'assets/img/cards/23.jpeg' },
-  ]
+  
   constructor(round = 'default', curr_cards_unfiltered = null) {
     if (round == 'default') return
     let curr_cards = curr_cards_unfiltered.filter(card => card.name != 'secret_card')
@@ -42,13 +43,13 @@ class Card {
       chosenID = randomInt(0, 22)
       hasEnoughMana = false
       curr_cards.forEach((card) => { if (card.cost <= round) hasEnoughMana = true })
-      if (this.cards[chosenID].cost <= round) hasEnoughMana = true
-    } while (curr_cards.includes(this.cards[chosenID]) || !hasEnoughMana)
-    this.name = this.cards[chosenID].name
-    this.str = this.cards[chosenID].str
-    this.hp = this.cards[chosenID].hp
-    this.cost = this.cards[chosenID].cost
-    this.url = this.cards[chosenID].url
+      if (cards[chosenID].cost <= round) hasEnoughMana = true
+    } while (curr_cards.includes(cards[chosenID]) || !hasEnoughMana)
+    this.name = cards[chosenID].name
+    this.str = cards[chosenID].str
+    this.hp = cards[chosenID].hp
+    this.cost = cards[chosenID].cost
+    this.url = cards[chosenID].url
   }
   set(new_card) {
     this.name = new_card.name
@@ -249,7 +250,9 @@ module.exports = class Battle {
   #get_move(socket, my_or_enemy) {
     if (this.players[0] && this.players[1]) {
       let id = (this.players[0].socket.handshake.address == socket.handshake.address ? 0 : 1 + my_or_enemy) % 2
-      if (this.used_card[id] != null) return this.used_card[id]
+      if (this.used_card[id] != null) {
+        return this.used_card[id]
+      }
       else return secret_card
     } else return secret_card
   }
@@ -273,7 +276,10 @@ module.exports = class Battle {
 
           this.made_move[i] = true
           // this.used_card[i] = card_id
-          this.used_card[i] = this.cards[i][card_id]
+          this.used_card[i] = new Card()
+          this.used_card[i].set(this.cards[i][card_id])
+
+          console.log(`USED CARD: ${this.used_card[i].url}`)
 
 
           this.cards[i][card_id].set_secret()

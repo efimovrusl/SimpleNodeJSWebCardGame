@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
       my_move: battle.myMove(socket),
       enemy_move: battle.enemyMove(socket),
     })
-    
+
   }, 50)
 
 
@@ -125,4 +125,5 @@ setInterval(() => {
   users.forEach((user) => {
     console.log(user.serialize())
   })
+  console.log(battle)
 }, 1000)
