@@ -125,5 +125,5 @@ setInterval(() => {
   users.forEach((user) => {
     console.log(user.serialize())
   })
-  console.log(battle)
+  // console.log(battle)
 }, 1000)

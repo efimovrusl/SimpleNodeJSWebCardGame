@@ -130,7 +130,7 @@ module.exports = class Battle {
             this.toggled_interval = setInterval(() => {
               this.timer--
 
-              if (this.timer <= 0) {
+              if (this.timer <= 0 || this.playersMadeTheirMoves()) {
                 this.timer = 0
                 clearInterval(this.toggled_interval)
                 this.toggled_interval = '1sectimer'
@@ -218,7 +218,7 @@ module.exports = class Battle {
     this.timer = 3
     this.round = 1
     this.nullifyCards()
-    this.mana = [1, 1]
+    this.mana = [ 1, 1 ]
     this.made_move = [ false, false ]
     this.used_card = [ null, null ]
     this.hp = [ 5, 5 ]
@@ -240,21 +240,23 @@ module.exports = class Battle {
   }
 
   
-
+  playersMadeTheirMoves() {
+    return this.used_card[0] && this.used_card[1]
+        && this.used_card[0].name != 'secret_card'
+        && this.used_card[1].name != 'secret_card'
+  }
   myMove(socket) {
-    return this.#get_move(socket, 0)
+    let id = this.my_id(socket)
+    if (this.used_card[id]) return this.used_card[id]
+    else return secret_card
   }
   enemyMove(socket) {
-    return this.#get_move(socket, 1)
+    let id = this.my_id(socket)
+    if (this.used_card[(id + 1) % 2] && this.made_move[id]) return this.used_card[(id + 1) % 2]
+    else return secret_card
   }
-  #get_move(socket, my_or_enemy) {
-    if (this.players[0] && this.players[1]) {
-      let id = (this.players[0].socket.handshake.address == socket.handshake.address ? 0 : 1 + my_or_enemy) % 2
-      if (this.used_card[id] != null) {
-        return this.used_card[id]
-      }
-      else return secret_card
-    } else return secret_card
+  my_id(socket) {
+    return socket.handshake.address == this.users[0].socket.handshake.address ? 0 : 1
   }
 
   nullifyCards() {

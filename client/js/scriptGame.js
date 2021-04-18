@@ -32,7 +32,6 @@ let game_state_update = socket.on('game_state', data => {
     round = data.round
 
   }
-  console.log(data.my_move)
   myUsedCard.set(data.my_move)
   enemyUsedCard.set(data.enemy_move)
 
