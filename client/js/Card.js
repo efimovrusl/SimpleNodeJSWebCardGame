@@ -20,7 +20,6 @@ class Card {
         this.dom_element = dom_element;
         this.is_transparent = (this.name == null)
         this.id = id
-        fuck(dom_element)
         this.dom_element.onclick = () => {
             socket.emit('use_card', this.id)
             socket.once('use_result', result => {
@@ -30,31 +29,40 @@ class Card {
                 }
             })
         }
+        this.hide()
+        this.update()
     }
 
     set(card) {
+        // console.log(`Set card #${this.id} to ${card.url}`)
+        if (this.img != card.url) this.show()
         this.name = card.name
         this.img = card.url
         this.str = card.str
         this.hp = card.hp
         this.cost = card.cost
-        if (this.img != card.url) this.show()
+        this.update()
     }
 
     update() {
-
         if (this.is_transparent) {
             this.hide()
         } else {
             this.show()
         }
+        this.dom_element.querySelector('#cardImgRaw').src = this.img
+        this.dom_element.querySelector('#str').innerText = this.str
+        this.dom_element.querySelector('#hp').innerText = this.hp
+        this.dom_element.querySelector('#cost').innerText = this.cost
     }
 
     show() {
+        this.is_transparent = false
         if (this.dom_element) this.dom_element.classList.remove("transparent")
     }
 
     hide(timeout = 0) {
+        this.is_transparent = true
         setTimeout(() => { if (this.dom_element) this.dom_element?.classList.add("transparent") }, timeout)
     }
 
@@ -64,29 +72,5 @@ class Card {
             setTimeout(() => { this.dom_element?.classList.remove("active") }, 600)
         }
     }
-
-    // render(id) {
-        
-
-
-        // let newSpan = document.createElement('span');
-        // newSpan.classList.add("card");
-        // newSpan.innerHTML = `<img src="${this.img}" alt="${this.name}Card" class="cardImgRaw">
-        //                      <img src="assets/img/stats.png" alt="${this.name}Stats" class="cardStatsImg">
-        //                      <div class="cardStats">
-        //                         <span>${this.str}</span>
-        //                         <span>${this.hp}</span>
-        //                         <span>${this.cost}</span>
-        //                      </div>`;
-        
-        // let idItem = document.getElementById(id);
-        // idItem.appendChild(newSpan);
-
-
-
-        // this.parentEl = idItem;
-        // this.element = newSpan;
-        // setTimeout(() => { this.parentEl.removeChild(this.element) }, 499)
-    // }
 
 }

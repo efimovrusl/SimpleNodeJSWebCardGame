@@ -40,6 +40,7 @@ let game_state_update = socket.on('game_state', data => {
 
   // updating cards // if card's changed, it shows if was hidden before
   for (let i = 0; i < data.my_cards.length; i++) mycards[i].set(data.my_cards[i])
+  // mycards.forEach(card => card.update()) // set() already updates card
 
   if (data.im_loginned) {
     if (data.im_playing) {

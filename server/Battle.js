@@ -32,6 +32,8 @@ class Card {
     { name: 'card', str: 5, hp: 6, cost: 6, url: 'assets/img/cards/22.jpeg' },
     { name: 'card', str: 7, hp: 7, cost: 7, url: 'assets/img/cards/23.jpeg' },
   ]
+  secret_card = 
+    { name: 'card', str: '?', hp: '?', cost: '?', url: 'assets/img/cards/secret_card.jpg' }
   str
   hp
   cost
@@ -61,7 +63,7 @@ module.exports = class Battle {
   update_interval = null
   toggled_timeout = null
   round = 1
-  cards = [[],[]] // array of arrays of users' cards
+  cards = [[],[]] // array  q arrays of users' cards
   mana = [1, 1]
   made_move = [ false, false ] // did player[id] make a move
   used_card = [ false, false ] // array of two chosen cards
@@ -76,6 +78,7 @@ module.exports = class Battle {
       // console.log(this.state)
       this.users = []
       Users.forEach(user => { this.users.push(user) })
+      if (this.users.length < 2) this.end()
       switch(this.state) {
         case stateEnum.waiting:
           let ready_users = this.users.filter(user => user.is_ready)
@@ -130,13 +133,19 @@ module.exports = class Battle {
               }
               for (let i = 0; i < 2; i++) {
                 this.players[i].socket.on('use_card', (card_id) => {
-                  if (this.cards[i,card_id].cost <= this.round && !this.made_move[i]) {
-                    this.made_move[i] = true
-                    this.used_card[i] = card_id
+                  console.log(`USE CARD: ${card_id} if(${this.cards[i][card_id]}`)
+                  if (this.cards[i][card_id]
+                    && this.cards[i][card_id].cost <= this.round 
+                    && !this.made_move[i]) {
+                    console.log(`CARD #${card_id} USED`)
 
-                    this.cards[i,card_id] = null
-                    this.cards[i] = this.cards[i].filter(card => card != null)
-                    this.players[i].socket.off('use_card')
+                    this.made_move[i] = true
+                    // this.used_card[i] = card_id
+                    this.used_card[i] = this.cards[i][card_id]
+
+
+                    this.cards[i][card_id] = Card.secret_card
+                    this.players[i].socket.removeAllListeners('use_card')
                     this.players[i].socket.emit('use_result', { result: true, id: card_id })
                   } else {
                     this.players[i].socket.emit('use_result', { result: false, id: card_id })
@@ -219,6 +228,7 @@ module.exports = class Battle {
     // }
     this.toggled_interval = null
     this.state = stateEnum.waiting
+    this.players.forEach(user => user.is_playing = false)
     this.players = []
     this.timer = 3
     this.round = 1
