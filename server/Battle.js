@@ -161,11 +161,7 @@ module.exports = class Battle {
                 this.toggled_interval = '1sectimer'
                 this.toggled_timeout = setTimeout(() => {
                   if (this.round <= 6) {
-                    for (let i = 0; i < 2; i++) {
-                      this.used_card[i] = secret_card
-                      this.made_move[i] = false
-                      this.mana[i] = this.round
-                    }
+                    
                     // CALCULATING WHO WON ROUND
                     if (this.used_card[0] != secret_card && this.used_card[1] == secret_card) this.hp[1]--
                     else if (this.used_card[1] != secret_card && this.used_card[0] == secret_card) this.hp[0]--
@@ -185,6 +181,11 @@ module.exports = class Battle {
                       this.toggled_interval = null
                     } else {
                       this.state = stateEnum.move
+                    }
+                    for (let i = 0; i < 2; i++) {
+                      this.used_card[i] = secret_card
+                      this.made_move[i] = false
+                      this.mana[i] = this.round
                     }
                     this.deal_cards()
                   } else {
