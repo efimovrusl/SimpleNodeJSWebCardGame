@@ -175,7 +175,10 @@ module.exports = class Battle {
             if (this.used_card[0] != null && this.used_card[1] == null) this.hp[1]--
             else if (this.used_card[1] != null && this.used_card[0] == null) this.hp[0]--
             else if (this.used_card[0] == null && this.used_card[1] == null) { this.hp[0]--; this.hp[1]-- }
-            else {
+            else if (this.used_card[0].str * this.used_card[0].hp == this.used_card[1].str * this.used_card[1].hp) {
+              this.hp[0]--
+              this.hp[1]--
+            } else {
               this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
                 || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
               this.hp[this.winner ? 0 : 1]--
@@ -245,6 +248,9 @@ module.exports = class Battle {
         && this.used_card[0].name != 'secret_card'
         && this.used_card[1].name != 'secret_card'
   }
+  my_id(socket) {
+    return socket.handshake.address == this.users[0].socket.handshake.address ? 0 : 1
+  }
   myMove(socket) {
     let id = this.my_id(socket)
     if (this.used_card[id]) return this.used_card[id]
@@ -255,8 +261,15 @@ module.exports = class Battle {
     if (this.used_card[(id + 1) % 2] && this.made_move[id]) return this.used_card[(id + 1) % 2]
     else return secret_card
   }
-  my_id(socket) {
-    return socket.handshake.address == this.users[0].socket.handshake.address ? 0 : 1
+  myHp(socket) {
+    let id = this.my_id(socket)
+    if (this.hp[id]) return this.hp[id]
+    else return 1
+  }
+  enemyHp(socket) {
+    let id = this.my_id(socket)
+    if (this.hp[(id + 1) % 2]) return this.hp[(id + 1) % 2]
+    else return 1
   }
 
   nullifyCards() {

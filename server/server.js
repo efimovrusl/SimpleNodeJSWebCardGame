@@ -98,6 +98,8 @@ io.on('connection', (socket) => {
       round: battle.round,
       my_move: battle.myMove(socket),
       enemy_move: battle.enemyMove(socket),
+      my_hp: battle.myHp(socket),
+      enemy_hp: battle.enemyHp(socket),
     })
 
   }, 50)

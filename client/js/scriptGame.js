@@ -27,10 +27,8 @@ let game_state_update = socket.on('game_state', data => {
   if (!am_i_playing && data.im_playing)
     startNewGame()
   am_i_playing = data.im_playing
-  timer = data.game_timer
   if (round != data.round) {
     round = data.round
-
   }
   myUsedCard.set(data.my_move)
   enemyUsedCard.set(data.enemy_move)
@@ -48,6 +46,15 @@ let game_state_update = socket.on('game_state', data => {
     }
   }
 
+  //------ UI ------//
+  timer = data.game_timer
+  document.querySelector('#timer_countdown').innerText = timer
+
+  resizeHp(Number(data.my_hp), "yourHealth");
+  resizeHp(Number(data.enemy_hp), "enemysHealth");
+
+  document.querySelector('#my_coins').innerText = `Coins: ${data.round}`
+  document.querySelector('#enemy_coins').innerText = `Coins: ${data.round}`
 })
 
 /*  im_loginned: !!users.get(socket.handshake.address).login, // boolean
@@ -68,16 +75,18 @@ function imready() {
 
 // ---- Resizing ----
 
-function calcScale(averageWidth, clas) {
+function calcScale(averageWidth, clas, skew) {
   let path = document.getElementsByClassName(clas);
   let width = document.body.clientWidth;
   let x = width * 1/ averageWidth;
-  for (el of path) el.style.transform = `scale(${x})`
+  for (el of path) el.style.transform = `scale(${x}) skew(${skew}deg)`
 }
 
-setInterval(function() { calcScale(1280, "hud"); }, 100);
-setInterval(function() { calcScale(1280, "cardOnField"); }, 100);
-setInterval(function() { calcScale(1090, "cardsInHand"); }, 100);
+setInterval(function() { calcScale(1280, "hud", 0); }, 100);
+setInterval(function() { calcScale(1280, "cardOnField", 0); }, 100);
+setInterval(function() { calcScale(1090, "cardsInHand", 0); }, 100);
+setInterval(function() { calcScale(1050, "timer", -17); }, 100);
+setInterval(function() { calcScale(1090, "alertSpan", -17); }, 100);
 
 // resizing hp
 
@@ -128,3 +137,19 @@ function fuck(message) {
 }
 
 let __local_shit = null
+
+
+
+// fade alerts
+
+function fadeIn(id) {
+  let el = document.getElementById(id);
+  el.style.display = "flex";
+  setTimeout(() => {el.style.opacity = 1;}, 10)
+}
+  
+function fadeOut(id) {
+  let el = document.getElementById(id);
+  el.style.opacity = 0;
+  setTimeout(() => {el.style.display = "none";}, 300)
+}

@@ -56,6 +56,18 @@
     <!-- Fight -->
 
     <div class="fight">
+
+        <div class="alert" id="winAlert" onclick="fadeOut('winAlert')">
+            <span class="alertSpan">Victory</span>
+        </div>
+        <div class="alert" id="defeatAlert">
+            <span class="alertSpan">Defeat</span>
+        </div>
+        <div class="alert" id="nextAlert">
+            <span class="alertSpan">Next round</span>
+        </div>
+        <span class="timer" id="timer_countdown"></span>
+
         <div class="fight-group">
 
             <div class="main">
@@ -87,7 +99,7 @@
                         <img src="assets/img/avatar.jpg" alt="Icon">
                     </div>
                         <span class="score">Rank: 5</span>
-                        <span class="coins">Coins: 2</span>
+                        <span class="coins" id="my_coins">Coins: 2</span>
                         <span class="name">Motherfucker</span>
                     <div class="health" id="yourHealth"><span></span></div>
                 </div>
@@ -129,7 +141,7 @@
                         <img src="assets/img/avatar.jpg" alt="Icon">
                     </div>
                     <span class="score">Rank: 5</span>
-                    <span class="coins">Coins: 2</span>
+                    <span class="coins" id="enemy_coins">Coins: 2</span>
                     <span class="name">Attack Helicopter</span>
                     <div class="health" id="enemysHealth"><span></span></div>
                 </div>

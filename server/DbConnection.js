@@ -17,7 +17,7 @@ module.exports = class DbConnection {
         login VARCHAR(255) NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
         avatar_link VARCHAR(255) DEFAULT 'https://ibb.co/s1WVzKT',
-        level INT(10) NOT NULL DEFAULT 0
+        level INT(10) NOT NULL DEFAULT 1
       );`, (err, results, fields) => { 
         if (err) console.log(`Database creation error: ${err}\n`) 
       })
