@@ -27,7 +27,7 @@ let game_state_update = socket.on('game_state', data => {
   if (!am_i_playing && data.im_playing)
     startNewGame()
   am_i_playing = data.im_playing
-  if (round != data.round) {
+  if (round != data.round && data.game_state != 4) {
     round = data.round
     if (round == 1) {
       setTimeout(() => {
