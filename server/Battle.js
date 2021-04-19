@@ -152,7 +152,7 @@ module.exports = class Battle {
           break;
         case stateEnum.showdown:
           if (!this.toggled_interval) {
-            this.timer = 3
+            this.timer = 2
             this.toggled_interval = setInterval(() => {
               this.timer--
               if (this.timer <= 0) {
@@ -161,38 +161,45 @@ module.exports = class Battle {
                 this.toggled_interval = '1sectimer'
                 this.toggled_timeout = setTimeout(() => {
                   if (this.round <= 6) {
-                    this.state = stateEnum.move
                     for (let i = 0; i < 2; i++) {
-                      this.used_card[i] = null
+                      this.used_card[i] = secret_card
                       this.made_move[i] = false
                       this.mana[i] = this.round
+                    }
+                    // CALCULATING WHO WON ROUND
+                    if (this.used_card[0] != null && this.used_card[1] == null) this.hp[1]--
+                    else if (this.used_card[1] != null && this.used_card[0] == null) this.hp[0]--
+                    else if (this.used_card[0] == null && this.used_card[1] == null) { this.hp[0]--; this.hp[1]-- }
+                    else if (this.used_card[0].str * this.used_card[0].hp == this.used_card[1].str * this.used_card[1].hp) {
+                      this.hp[0]--
+                      this.hp[1]--
+                    } else {
+                      this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
+                        || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
+                      this.hp[this.winner ? 0 : 1]--
+                    }
+                    if (this.hp[0] <= 0 || this.hp[1] <= 0) {
+                      this.state = stateEnum.results
+                    } else {
+                      this.state = stateEnum.move
                     }
                     this.deal_cards()
                   } else {
                     this.state = stateEnum.results
+                    clearInterval(this.toggled_interval)
+                    this.toggled_interval = null
                   }
                   this.toggled_interval = null
                   this.toggled_timeout = null
                 }, 1000)
               }
             }, 1000)
-            // CALCULATING WHO WON ROUND
-            if (this.used_card[0] != null && this.used_card[1] == null) this.hp[1]--
-            else if (this.used_card[1] != null && this.used_card[0] == null) this.hp[0]--
-            else if (this.used_card[0] == null && this.used_card[1] == null) { this.hp[0]--; this.hp[1]-- }
-            else if (this.used_card[0].str * this.used_card[0].hp == this.used_card[1].str * this.used_card[1].hp) {
-              this.hp[0]--
-              this.hp[1]--
-            } else {
-              this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
-                || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
-              this.hp[this.winner ? 0 : 1]--
-            }
 
           }
           break;
         case stateEnum.results:
           if (!this.toggled_interval) {
+            console.log("RESULTSSSSSSSSSSSSSS" + this.state)
             this.timer = 5
             this.toggled_interval = setInterval(() => {
               this.timer--
@@ -273,12 +280,12 @@ module.exports = class Battle {
   myHp(socket) {
     let id = this.my_id(socket)
     if (this.hp[id]) return this.hp[id]
-    else return 1
+    else return 0
   }
   enemyHp(socket) {
     let id = this.my_id(socket)
     if (this.hp[(id + 1) % 2]) return this.hp[(id + 1) % 2]
-    else return 1
+    else return 0
   }
   myLevel(socket) {
     let id = this.my_id(socket)

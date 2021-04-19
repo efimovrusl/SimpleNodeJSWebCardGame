@@ -38,35 +38,26 @@ let game_state_update = socket.on('game_state', data => {
       }, 2000)
     }
     document.querySelector('#nextRound').querySelector('.alertSpan').innerText = `Round ${round}`
-    setTimeout(() => {
-      fadeIn("nextRound")
-    }, 3000)
-    setTimeout(() => {
-      fadeOut("nextRound")
-    }, 4000)
-    if (data.game_state == "results") {
-      if (data.my_hp > data.enemy_hp) {
-        setTimeout(() => {
-          fadeIn("winAlert")
-        }, 3000)
-        setTimeout(() => {
-          fadeOut("winAlert")
-        }, 4000)
-      } else if (data.my_hp < data.enemy_hp) {
-        setTimeout(() => {
-          fadeIn("defeatAlert")
-        }, 3000)
-        setTimeout(() => {
-          fadeOut("defeatAlert")
-        }, 4000)
-      } else {
-        setTimeout(() => {
-          fadeIn("drawAlert")
-        }, 3000)
-        setTimeout(() => {
-          fadeOut("drawAlert")
-        }, 4000)
-      }
+    if (data.game_state != 4) {
+      setTimeout(() => {
+        fadeIn("nextRound")
+      }, 3000)
+      setTimeout(() => {
+        fadeOut("nextRound")
+      }, 4000)
+    }
+    
+  }
+  if (data.game_state == 4) {
+    if (Number(data.my_hp) > Number(data.enemy_hp)) {
+      fadeIn("winAlert")
+      setTimeout(() => { fadeOut("winAlert") }, 5000)
+    } else if (Number(data.my_hp) < Number(data.enemy_hp)) {
+      fadeIn("defeatAlert")
+      setTimeout(() => { fadeOut("defeatAlert") }, 5000)
+    } else {
+      fadeIn("drawAlert")
+      setTimeout(() => { fadeOut("drawAlert") }, 4000)
     }
   }
   myUsedCard.set(data.my_move)

@@ -23,8 +23,8 @@ function updateLevels(logins, hp)  {
     db_connection.updateUserLevel(logins[1], -1)
   }
   if (hp[0] < hp[1]) {
-    db_connection.updateUserLevel(login[1], 1)
-    db_connection.updateUserLevel(login[0], -1)
+    db_connection.updateUserLevel(logins[1], 1)
+    db_connection.updateUserLevel(logins[0], -1)
   }
 }
 let battle = new Battle(users, updateLevels)

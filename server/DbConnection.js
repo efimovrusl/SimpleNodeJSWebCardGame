@@ -76,6 +76,10 @@ module.exports = class DbConnection {
   }
 
   updateUserLevel(login, level) {
+    if (!login[0] || !login[1]) {
+      console.log("ERROR ON UPDATING LEVEL!!!!!!!!!!!!!!!!!!!")
+      return
+    }
     this.#connection.query(`SELECT * FROM users WHERE login = '${login}'`,
     (err, results, fields) => {
       if (err) {
