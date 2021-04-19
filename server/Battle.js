@@ -1,9 +1,9 @@
 const stateEnum = {
-  "waiting": 0,
+  "waiting":   0,
   "countdown": 1,
-  "move": 2,
-  "showdown": 3,
-  "results": 4
+  "move":      2,
+  "showdown":  3,
+  "results":   4,
 }
 const secret_card = { name: 'secret_card', str: '?', hp: '?', cost: '?', url: 'assets/img/cards/secret_card.jpg' }
 const cards = [
@@ -325,7 +325,7 @@ module.exports = class Battle {
           console.log(`USED CARD: ${this.used_card[i].url}`)
 
 
-          this.cards[i][card_id].set_secret()
+          setTimeout(() => { this.cards[i][card_id].set_secret() }, 800)
           this.players[i].socket.emit('use_result', { result: true, id: card_id })
         } else {
           this.players[i].socket.emit('use_result', { result: false, id: card_id })

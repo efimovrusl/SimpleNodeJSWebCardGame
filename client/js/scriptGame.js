@@ -39,12 +39,35 @@ let game_state_update = socket.on('game_state', data => {
     }
     document.querySelector('#nextRound').querySelector('.alertSpan').innerText = `Round ${round}`
     setTimeout(() => {
-      fadeIn("nextAlert")
+      fadeIn("nextRound")
     }, 3000)
     setTimeout(() => {
-      fadeOut("nextAlert")
+      fadeOut("nextRound")
     }, 4000)
-    
+    if (data.game_state == "results") {
+      if (data.my_hp > data.enemy_hp) {
+        setTimeout(() => {
+          fadeIn("winAlert")
+        }, 3000)
+        setTimeout(() => {
+          fadeOut("winAlert")
+        }, 4000)
+      } else if (data.my_hp < data.enemy_hp) {
+        setTimeout(() => {
+          fadeIn("defeatAlert")
+        }, 3000)
+        setTimeout(() => {
+          fadeOut("defeatAlert")
+        }, 4000)
+      } else {
+        setTimeout(() => {
+          fadeIn("drawAlert")
+        }, 3000)
+        setTimeout(() => {
+          fadeOut("drawAlert")
+        }, 4000)
+      }
+    }
   }
   myUsedCard.set(data.my_move)
   enemyUsedCard.set(data.enemy_move)
@@ -106,7 +129,7 @@ function calcScale(averageWidth, clas, skew) {
 }
 
 setInterval(function() { calcScale(1280, "hud", 0); }, 100);
-setInterval(function() { calcScale(1280, "cardOnField", 0); }, 100);
+setInterval(function() { calcScale(1480, "cardOnField", 0); }, 100);
 setInterval(function() { calcScale(1090, "cardsInHand", 0); }, 100);
 setInterval(function() { calcScale(1050, "timer", -17); }, 100);
 setInterval(function() { calcScale(1090, "alertSpan", -17); }, 100);
