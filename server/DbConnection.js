@@ -59,6 +59,38 @@ module.exports = class DbConnection {
     })
   }
 
+  updateLevel(login, onResult) {
+    if (login == 'null' || login == null) return
+    this.#connection.query(`SELECT * FROM users WHERE login = '${login}'`,
+    (err, results, fields) => {
+      if (err) {
+        console.log(`User request error: ${err}\n`)
+        onResult(-1)
+      } else {
+        if (results.length >= 1) {
+          let res = results[0]
+          onResult(res.level)
+        }
+      }
+    })
+  }
+
+  updateUserLevel(login, level) {
+    this.#connection.query(`SELECT * FROM users WHERE login = '${login}'`,
+    (err, results, fields) => {
+      if (err) {
+        console.log(`User request error: ${err}\n`)
+      } else {
+        if (results.length >= 1) {
+          let res = results[0]
+          this.#connection.query(`UPDATE users SET level = '${(res.level + level >= 0) ? (res.level + level) : res.level}' WHERE login = '${login}' ;`)
+
+
+        }
+      }
+    })
+  }
+
   registerUser(login, password_hash) {
     this.#connection.query(
       `INSERT INTO users (login, password_hash) 

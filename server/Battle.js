@@ -78,10 +78,13 @@ module.exports = class Battle {
   used_card = [ null, null ] // array of two chosen cards
   hp = [ 5, 5 ]
   winner = null
+  logins = []
+  onBattleEnd = function() {}
 
   /** @param {Map} Users */
-  constructor(Users) {
+  constructor(Users, onBattleEnd) {
     this.nullifyCards()
+    this.onBattleEnd = onBattleEnd
     
 
 
@@ -94,6 +97,8 @@ module.exports = class Battle {
         case stateEnum.waiting:
           let ready_users = this.users.filter(user => user.is_ready)
           if (ready_users.length >= 2) {
+            this.logins[0] = ready_users[0].login
+            this.logins[1] = ready_users[1].login
             this.players.push(ready_users[0])
             this.players.push(ready_users[1])
             this.users.forEach(user => user.is_ready = false)
@@ -147,7 +152,7 @@ module.exports = class Battle {
           break;
         case stateEnum.showdown:
           if (!this.toggled_interval) {
-            this.timer = 5
+            this.timer = 3
             this.toggled_interval = setInterval(() => {
               this.timer--
               if (this.timer <= 0) {
@@ -188,11 +193,13 @@ module.exports = class Battle {
           break;
         case stateEnum.results:
           if (!this.toggled_interval) {
-            this.timer = 10
+            this.timer = 5
             this.toggled_interval = setInterval(() => {
               this.timer--
               // nullifying all values to initial Battle state
-              if (this.timer <= 0) this.end()
+              if (this.timer <= 0) {
+                this.end()
+              }
             }, 1000)
           }
           break;
@@ -212,6 +219,8 @@ module.exports = class Battle {
   }
 
   end() {
+    this.onBattleEnd(this.logins, this.hp)
+
     clearInterval(this.toggled_interval)
     clearTimeout(this.toggled_timeout)
     this.toggled_interval = null
@@ -270,6 +279,26 @@ module.exports = class Battle {
     let id = this.my_id(socket)
     if (this.hp[(id + 1) % 2]) return this.hp[(id + 1) % 2]
     else return 1
+  }
+  myLevel(socket) {
+    let id = this.my_id(socket)
+    if (this.players[id]) return this.players[0].level
+    else return null
+  }
+  enemyLevel(socket) {
+    let id = this.my_id(socket)
+    if (this.players[(id + 1) % 2]) return this.players[(id + 1) % 2].level
+    else return null
+  }
+  myLogin(socket) {
+    let id = this.my_id(socket)
+    if (this.players[id]) return this.players[id].login
+    else return null
+  }
+  enemyLogin(socket) {
+    let id = this.my_id(socket)
+    if (this.players[(id + 1) % 2]) return this.players[(id + 1) % 2].login
+    else return null
   }
 
   nullifyCards() {

@@ -17,7 +17,17 @@ const Battle = require('./Battle.js')
 
 const db_connection = new DbConnection()
 let users = new Map()
-let battle = new Battle(users)
+function updateLevels(logins, hp)  {
+  if (hp[0] > hp[1]) {
+    db_connection.updateUserLevel(logins[0], 1)
+    db_connection.updateUserLevel(logins[1], -1)
+  }
+  if (hp[0] < hp[1]) {
+    db_connection.updateUserLevel(login[1], 1)
+    db_connection.updateUserLevel(login[0], -1)
+  }
+}
+let battle = new Battle(users, updateLevels)
 
 io.on('connection', (socket) => {
   console.log(`User (${socket.handshake.address.split('f:')[1]}) connected.`)
@@ -78,13 +88,11 @@ io.on('connection', (socket) => {
     clearInterval(send_info_interval)
   })
   send_info_interval = setInterval(() => {
-    // if () {
-    //   clearInterval(send_info_interval)
-    //   stop = true
-    // }
-    // if (stop) return
     let online_users = []
     users.forEach(user => { if (user.socket.handshake.address != socket.handshake.address) online_users.push(user.login) })
+    users.forEach(user => { db_connection.updateLevel(user.login, level => { 
+      user.level = level
+    }) })
     socket.emit('game_state', {
       im_loginned: !!users.get(socket.handshake.address).login, // boolean
       im_ready: users.get(socket.handshake.address).is_ready, // boolean
@@ -100,8 +108,12 @@ io.on('connection', (socket) => {
       enemy_move: battle.enemyMove(socket),
       my_hp: battle.myHp(socket),
       enemy_hp: battle.enemyHp(socket),
+      my_level: battle.myLevel(socket),
+      enemy_level: battle.enemyLevel(socket),
+      my_login: battle.myLogin(socket),
+      enemy_login: battle.enemyLogin(socket),
     })
-
+    
   }, 50)
 
 

@@ -55,6 +55,12 @@ let game_state_update = socket.on('game_state', data => {
 
   document.querySelector('#my_coins').innerText = `Coins: ${data.round}`
   document.querySelector('#enemy_coins').innerText = `Coins: ${data.round}`
+  document.querySelector('#my_level').innerText = `Level: ${data.my_level}`
+  document.querySelector('#enemy_level').innerText = `Level: ${data.enemy_level}`
+
+  document.querySelector('#my_login').innerText = `${data.my_login}`
+  document.querySelector('#enemy_login').innerText = `${data.enemy_login}`
+
 })
 
 /*  im_loginned: !!users.get(socket.handshake.address).login, // boolean
