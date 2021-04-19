@@ -319,7 +319,6 @@ module.exports = class Battle {
           console.log(`CARD #${card_id} USED`)
 
           this.made_move[i] = true
-          // this.used_card[i] = card_id
           this.used_card[i] = new Card()
           this.used_card[i].set(this.cards[i][card_id])
 

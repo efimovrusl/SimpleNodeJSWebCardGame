@@ -29,6 +29,22 @@ let game_state_update = socket.on('game_state', data => {
   am_i_playing = data.im_playing
   if (round != data.round) {
     round = data.round
+    if (round == 1) {
+      setTimeout(() => {
+        fadeIn("readyAlert")
+      }, 500)
+      setTimeout(() => {
+        fadeOut("readyAlert")
+      }, 2000)
+    }
+    document.querySelector('#nextRound').querySelector('.alertSpan').innerText = `Round ${round}`
+    setTimeout(() => {
+      fadeIn("nextAlert")
+    }, 3000)
+    setTimeout(() => {
+      fadeOut("nextAlert")
+    }, 4000)
+    
   }
   myUsedCard.set(data.my_move)
   enemyUsedCard.set(data.enemy_move)
@@ -60,6 +76,7 @@ let game_state_update = socket.on('game_state', data => {
 
   document.querySelector('#my_login').innerText = `${data.my_login}`
   document.querySelector('#enemy_login').innerText = `${data.enemy_login}`
+
 
 })
 
