@@ -167,19 +167,22 @@ module.exports = class Battle {
                       this.mana[i] = this.round
                     }
                     // CALCULATING WHO WON ROUND
-                    if (this.used_card[0] != null && this.used_card[1] == null) this.hp[1]--
-                    else if (this.used_card[1] != null && this.used_card[0] == null) this.hp[0]--
-                    else if (this.used_card[0] == null && this.used_card[1] == null) { this.hp[0]--; this.hp[1]-- }
-                    else if (this.used_card[0].str * this.used_card[0].hp == this.used_card[1].str * this.used_card[1].hp) {
+                    if (this.used_card[0] != secret_card && this.used_card[1] == secret_card) this.hp[1]--
+                    else if (this.used_card[1] != secret_card && this.used_card[0] == secret_card) this.hp[0]--
+                    else if (this.used_card[0] == secret_card && this.used_card[1] == secret_card) { this.hp[0]--; this.hp[1]-- }
+                    else if (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp)
+                      this.hp[1]--
+                    else if (this.used_card[0].str * this.used_card[0].hp < this.used_card[1].str * this.used_card[1].hp)
+                      this.hp[0]--
+                    else {
                       this.hp[0]--
                       this.hp[1]--
-                    } else {
-                      this.winner = (this.used_card[0].str * this.used_card[0].hp > this.used_card[1].str * this.used_card[1].hp
-                        || this.used_card[0].str > this.used_card[1].str || this.used_card[0].hp > this.used_card[1].hp) ? 0 : 1
-                      this.hp[this.winner ? 0 : 1]--
+                      console.log("SHITTTTT")
                     }
                     if (this.hp[0] <= 0 || this.hp[1] <= 0) {
                       this.state = stateEnum.results
+                      clearInterval(this.toggled_interval)
+                      this.toggled_interval = null
                     } else {
                       this.state = stateEnum.move
                     }

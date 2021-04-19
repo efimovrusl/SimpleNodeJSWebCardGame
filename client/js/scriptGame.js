@@ -49,6 +49,7 @@ let game_state_update = socket.on('game_state', data => {
     
   }
   if (data.game_state == 4) {
+    fadeOut("nextRound")
     if (Number(data.my_hp) > Number(data.enemy_hp)) {
       fadeIn("winAlert")
       setTimeout(() => { fadeOut("winAlert") }, 5000)
@@ -57,7 +58,7 @@ let game_state_update = socket.on('game_state', data => {
       setTimeout(() => { fadeOut("defeatAlert") }, 5000)
     } else {
       fadeIn("drawAlert")
-      setTimeout(() => { fadeOut("drawAlert") }, 4000)
+      setTimeout(() => { fadeOut("drawAlert") }, 5000)
     }
   }
   myUsedCard.set(data.my_move)
